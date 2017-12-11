@@ -44,7 +44,7 @@
 #include "nDetAnalysisManager.hh"
 #include "nDetTrackingAction.hh"
 #include "nDetPhysicsList.hh"
-//#include "nDetActionInitialization.hh"
+#include "nDetActionInitialization.hh"
 
 #include "G4OpticalPhysics.hh"
 
@@ -117,6 +117,7 @@ that didn't work... this is horribly deprecated*/
 
     nDetAnalysisManager *theManager= new nDetAnalysisManager();
 
+/*
   //Geant complains we need ot change this for multithreading.  Moving the following to nDetActionInitialization.cc
   nDetRunAction* runAction =
                         new nDetRunAction();
@@ -139,9 +140,10 @@ that didn't work... this is horribly deprecated*/
 
   nDetTrackingAction*  trackingAction = new nDetTrackingAction();
   runManager->SetUserAction(trackingAction);
+*/
 
 //So we do this instead K Schmitt 6/16/16
-//  runManager->SetUserInitialization(new nDetActionInitialization());
+  runManager->SetUserInitialization(new nDetActionInitialization(detector));
 //end of Kyle's changes
 
   // Initialize G4 kernel

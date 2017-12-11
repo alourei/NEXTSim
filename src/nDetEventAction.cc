@@ -96,7 +96,7 @@ void nDetEventAction::EndOfEventAction(const G4Event* evt)
     nDetUserEventInformation *theEventInformation= static_cast<nDetUserEventInformation*>(evt->GetUserInformation());
 
     G4int nDetections=theEventInformation->GetDetectionCount();
-    
+
     if(fpEventManager->GetVerboseLevel()>1){
     G4cout<<"nDetEventAction::EndOfEventAction()->"<<nDetections<<"Photons detected in this event"<<G4endl;
     }
