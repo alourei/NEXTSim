@@ -11,7 +11,7 @@
 
 
 
-G4Allocator<SiPMHit> SiPMHitAllocator;
+G4ThreadLocal G4Allocator<SiPMHit>* SiPMHitAllocator=0;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 SiPMHit::SiPMHit(){;}

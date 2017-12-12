@@ -7,7 +7,7 @@
 
 #endif //NEXTMULTIPLESCATTERING_NDETACTIONINITIALIZATION_HH
 
-#include "G4VUserActionInitialization.hh
+#include "G4VUserActionInitialization.hh"
 
 class nDetConstruction;
 class nDetActionInitialization : public G4VUserActionInitialization{
@@ -16,7 +16,7 @@ public:
     nDetActionInitialization(nDetConstruction *detector);
     ~nDetActionInitialization();
     virtual void BuildForMaster() const;
-    virtual void Build();
+    virtual void Build() const;
 
 private:
 

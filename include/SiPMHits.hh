@@ -9,6 +9,7 @@
 #include "G4THitsCollection.hh"
 #include "G4Allocator.hh"
 #include "G4ThreeVector.hh"
+#include "G4Types.hh"
 
 
 class SiPMHit:public G4VHit
@@ -53,20 +54,20 @@ private:
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 typedef G4THitsCollection<SiPMHit> SiPMHitsCollection;
 
-extern G4Allocator<SiPMHit> SiPMHitAllocator;
+extern G4ThreadLocal G4Allocator<SiPMHit>* SiPMHitAllocator;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 inline void* SiPMHit::operator new(size_t)
 {
     void *aHit;
-    aHit = (void *) SiPMHitAllocator.MallocSingle();
+    aHit = (void *) SiPMHitAllocator->MallocSingle();
     return aHit;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 inline void SiPMHit::operator delete(void *aHit)
 {
-    SiPMHitAllocator.FreeSingle((SiPMHit*) aHit);
+    SiPMHitAllocator->FreeSingle((SiPMHit*) aHit);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

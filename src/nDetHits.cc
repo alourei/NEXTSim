@@ -12,7 +12,7 @@
 #include "G4VisAttributes.hh"
 #include "G4UnitsTable.hh"
 
-G4Allocator<nDetHit> nDetHitAllocator;
+G4ThreadLocal G4Allocator<nDetHit>* nDetHitAllocator=0;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 nDetHit::nDetHit(){;}

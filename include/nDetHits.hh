@@ -13,7 +13,7 @@
 #include "G4THitsCollection.hh"
 #include "G4Allocator.hh"
 #include "G4ThreeVector.hh"
-
+#include "G4Types.hh"
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 class nDetHit : public G4VHit
@@ -54,20 +54,20 @@ class nDetHit : public G4VHit
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 typedef G4THitsCollection<nDetHit> nDetHitsCollection;
 
-extern G4Allocator<nDetHit> nDetHitAllocator;
+extern G4ThreadLocal G4Allocator<nDetHit>* nDetHitAllocator;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 inline void* nDetHit::operator new(size_t)
 {
   void *aHit;
-  aHit = (void *) nDetHitAllocator.MallocSingle();
+  aHit = (void *) nDetHitAllocator->MallocSingle();
   return aHit;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 inline void nDetHit::operator delete(void *aHit)
 {
-  nDetHitAllocator.FreeSingle((nDetHit*) aHit);
+  nDetHitAllocator->FreeSingle((nDetHit*) aHit);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
