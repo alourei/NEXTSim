@@ -15,7 +15,7 @@
 #include "G4GeometryManager.hh"
 #include "G4RunManager.hh"
 #include "G4SystemOfUnits.hh"
-#include "G4LogicalBorderSurface.hh"si
+#include "G4LogicalBorderSurface.hh"
 
 static const G4double inch = 2.54*cm;
 
@@ -145,7 +145,7 @@ void nDetConstruction::buildExpHall()
     expHall_logV->SetVisAttributes(G4VisAttributes::Invisible);
 
   expHall_physV = new G4PVPlacement(0,G4ThreeVector(0., 0., 0.),expHall_logV,
-                                   "expHall_physV",0,false,0);
+                                   "expHall_physV",0,false,fCheckOverlaps);
  
   return;
 } // end of buildExpHall function
@@ -745,7 +745,7 @@ void nDetConstruction::buildEllipse() {
 
     assembly_logV=new G4LogicalVolume(theWrapping,fTeflon,"Wrapping_log");
 
-    G4VPhysicalVolume *Wrapping_physVol=new G4PVPlacement(0,G4ThreeVector(0,0,0),assembly_logV,"Wrap",expHall_logV,0,0,true);
+    G4VPhysicalVolume *Wrapping_physVol=new G4PVPlacement(0,G4ThreeVector(0,0,0),assembly_logV,"Wrap",expHall_logV,0,0,fCheckOverlaps);
 
     G4LogicalSkinSurface *thePlasticSkin=new G4LogicalSkinSurface("Wrapping",assembly_logV,fTeflonOpticalSurface);
 
@@ -799,7 +799,7 @@ void nDetConstruction::buildEllipse() {
     //thePlastic_log->SetSensitiveDetector(fScintSD);
     G4VisAttributes* ej200_VisAtt= new G4VisAttributes(G4Colour(0.0,0.0,1.0));//blue
     ej200_logV->SetVisAttributes(ej200_VisAtt);
-    G4VPhysicalVolume *physVol=new G4PVPlacement(0,G4ThreeVector(0,0,0),ej200_logV,"Scint",assembly_logV,0,0,true);
+    G4VPhysicalVolume *physVol=new G4PVPlacement(0,G4ThreeVector(0,0,0),ej200_logV,"Scint",assembly_logV,0,0,fCheckOverlaps);
 
     buildSiPMs();
     //psSiPM_logV->SetSensitiveDetector(fSiPMSD);
@@ -1350,7 +1350,7 @@ void nDetConstruction::buildEllipse2() {
 
     fWrapSkinSurface=new G4LogicalSkinSurface("Wrapping",assembly_logV,fTeflonOpticalSurface);
 
-    G4VPhysicalVolume *Wrapping_physVol=new G4PVPlacement(0,G4ThreeVector(0,0,0),assembly_logV,"Wrap",expHall_logV,0,0,true);
+    G4VPhysicalVolume *Wrapping_physVol=new G4PVPlacement(0,G4ThreeVector(0,0,0),assembly_logV,"Wrap",expHall_logV,0,0,fCheckOverlaps);
 
 
     //Building the Scintillator
@@ -1368,7 +1368,7 @@ void nDetConstruction::buildEllipse2() {
     G4VisAttributes* ej200_VisAtt= new G4VisAttributes(G4Colour(0.0,0.0,1.0));//blue
     ej200_logV->SetVisAttributes(ej200_VisAtt);
 
-    G4VPhysicalVolume *scint_phys=new G4PVPlacement(0,G4ThreeVector(0,0,0),ej200_logV,"Scint",assembly_logV,0,0,true);
+    G4VPhysicalVolume *scint_phys=new G4PVPlacement(0,G4ThreeVector(0,0,0),ej200_logV,"Scint",assembly_logV,0,0,fCheckOverlaps);
 
     //Building the Mylar covers
 
@@ -1390,10 +1390,10 @@ void nDetConstruction::buildEllipse2() {
         //assembly_logV->SetVisAttributes(mylar_VisAtt);
 
         G4ThreeVector position(0, dimensions3.y() / 2 + fMylarThickness / 2, 0);
-        G4PVPlacement *mylar_phys = new G4PVPlacement(0, position, mylar_logV, "Mylar1", assembly_logV, true, 0, true);
+        G4PVPlacement *mylar_phys = new G4PVPlacement(0, position, mylar_logV, "Mylar1", assembly_logV, true, 0, fCheckOverlaps);
         G4ThreeVector position2(0, -dimensions3.y() / 2 - fMylarThickness / 2, 0);
         G4PVPlacement *mylar_phys2 = new G4PVPlacement(0, position2, mylar_logV, "Mylar2", assembly_logV, true, 0,
-                                                       true);
+                                                       fCheckOverlaps);
 
 
         fMylarSurface = new G4LogicalBorderSurface("Mylar", scint_phys, mylar_phys, fMylarOpticalSurface);
@@ -1436,7 +1436,7 @@ void nDetConstruction::buildRectangle() {
 
     fWrapSkinSurface = new G4LogicalSkinSurface("wrapping",assembly_logV,fTeflonOpticalSurface);
 
-    G4VPhysicalVolume *Wrapping_physVol=new G4PVPlacement(0,G4ThreeVector(0,0,0),assembly_logV,"Wrap",expHall_logV,0,0,true);
+    G4VPhysicalVolume *Wrapping_physVol=new G4PVPlacement(0,G4ThreeVector(0,0,0),assembly_logV,"Wrap",expHall_logV,0,0,fCheckOverlaps);
 
     //Building the Scintillator
 
@@ -1451,7 +1451,7 @@ void nDetConstruction::buildRectangle() {
     G4VisAttributes* ej200_VisAtt= new G4VisAttributes(G4Colour(0.0,0.0,1.0));//blue
     ej200_logV->SetVisAttributes(ej200_VisAtt);
 
-    G4VPhysicalVolume *scint_phys=new G4PVPlacement(0,G4ThreeVector(0,0,0),ej200_logV,"Scint",assembly_logV,0,0,true);
+    G4VPhysicalVolume *scint_phys=new G4PVPlacement(0,G4ThreeVector(0,0,0),ej200_logV,"Scint",assembly_logV,0,0,fCheckOverlaps);
 
     //Building the Mylar covers
 
@@ -1469,10 +1469,10 @@ void nDetConstruction::buildRectangle() {
         mylar_logV->SetVisAttributes(mylar_VisAtt);
 
         G4ThreeVector position(0, 0.24 * inch / 2 + fMylarThickness / 2, 0);
-        G4PVPlacement *mylar_phys = new G4PVPlacement(0, position, mylar_logV, "Mylar1", assembly_logV, true, 0, true);
+        G4PVPlacement *mylar_phys = new G4PVPlacement(0, position, mylar_logV, "Mylar1", assembly_logV, true, 0, fCheckOverlaps);
         G4ThreeVector position2(0, -0.24 * inch / 2 - fMylarThickness / 2, 0);
         G4PVPlacement *mylar_phys2 = new G4PVPlacement(0, position2, mylar_logV, "Mylar2", assembly_logV, true, 0,
-                                                       true);
+                                                       fCheckOverlaps);
 
 
         fMylarSurface = new G4LogicalBorderSurface("Mylar", scint_phys, mylar_phys, fMylarOpticalSurface);
@@ -1585,10 +1585,10 @@ void nDetConstruction::buildDisk2() {
         //assembly_logV->SetVisAttributes(mylar_VisAtt);
 
         G4ThreeVector position(0, 0, SiPM_dimension + fMylarThickness);
-        G4PVPlacement *mylar_phys = new G4PVPlacement(0, position, mylar_logV, "Mylar1", assembly_logV, true, 0, true);
+        G4PVPlacement *mylar_phys = new G4PVPlacement(0, position, mylar_logV, "Mylar1", assembly_logV, true, 0, fCheckOverlaps);
         G4ThreeVector position2(0, 0, -SiPM_dimension - fMylarThickness);
         G4PVPlacement *mylar_phys2 = new G4PVPlacement(0, position2, mylar_logV, "Mylar2", assembly_logV, true, 0,
-                                                       true);
+                                                       fCheckOverlaps);
 
 
         fMylarSurface = new G4LogicalBorderSurface("Mylar", assembly_physV, mylar_phys, fMylarOpticalSurface);

@@ -59,6 +59,7 @@ extern G4ThreadLocal G4Allocator<SiPMHit>* SiPMHitAllocator;
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 inline void* SiPMHit::operator new(size_t)
 {
+    if(!SiPMHitAllocator) SiPMHitAllocator = new G4Allocator<SiPMHit>;
     void *aHit;
     aHit = (void *) SiPMHitAllocator->MallocSingle();
     return aHit;
@@ -67,6 +68,7 @@ inline void* SiPMHit::operator new(size_t)
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 inline void SiPMHit::operator delete(void *aHit)
 {
+    if(!SiPMHitAllocator) SiPMHitAllocator = new G4Allocator<SiPMHit>;
     SiPMHitAllocator->FreeSingle((SiPMHit*) aHit);
 }
 

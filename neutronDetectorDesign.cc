@@ -66,8 +66,10 @@ int main(int argc, char** argv)
   // Construct the default run manager
 #ifdef G4MULTITHREADED
   G4MTRunManager* runManager = new G4MTRunManager;
-  runManager->SetNumberOfThreads(G4Threading::G4GetNumberOfCores());
-    G4cout<<"Running in multi-thread mode with "<<G4Threading::G4GetNumberOfCores()<<" cores"<<G4endl;
+  //runManager->SetNumberOfThreads(G4Threading::G4GetNumberOfCores());
+  runManager->SetNumberOfThreads(1);
+
+    G4cout<<"Running in multi-thread mode with "<<runManager->GetNumberOfThreads()<<" cores"<<G4endl;
 #else
   G4RunManager* runManager = new G4RunManager;
 #endif
@@ -104,6 +106,7 @@ that didn't work... this is horribly deprecated*/
   G4VModularPhysicsList* physics = new QGSP_BERT_HP();
 
   G4OpticalPhysics *theOpticalPhysics=new G4OpticalPhysics();
+  //DPL Added Scrintillation By particle Type
   theOpticalPhysics->SetScintillationByParticleType(true);
   physics->ReplacePhysics(theOpticalPhysics);
   runManager->SetUserInitialization( physics );
@@ -116,7 +119,7 @@ that didn't work... this is horribly deprecated*/
 
   //set optional user action classes
 
-    nDetAnalysisManager *theManager= new nDetAnalysisManager();
+   // nDetAnalysisManager *theManager= new nDetAnalysisManager();
 
 /*
   //Geant complains we need ot change this for multithreading.  Moving the following to nDetActionInitialization.cc
@@ -152,6 +155,8 @@ that didn't work... this is horribly deprecated*/
   
   // get the pointer to the UI manager and set verbosities
   G4UImanager *UImanager = G4UImanager::GetUIpointer();
+
+    UImanager->ApplyCommand("/physics/verbose 0");
 
   if (argc==1)   // Define UI session for interactive mode
     {

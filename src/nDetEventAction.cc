@@ -28,12 +28,19 @@
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
  
 nDetEventAction::nDetEventAction(nDetRunAction* run)
-:runAct(run)
-{}
+:runAct(run),fAnalysisManager(0)
+{
+    G4cout<<"nDetEventAction::nDetEventAction()->fAnlManager: "<<fAnalysisManager<<G4endl;
+
+    //fAnalysisManager=(nDetAnalysisManager*)nDetAnalysisManager::Instance();
+    G4cout<<"nDetEventAction::nDetEventAction()->fAnlManager: "<<fAnalysisManager<<G4endl;
+
+}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
  
 nDetEventAction::~nDetEventAction() {
+    fAnalysisManager=0;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -41,7 +48,7 @@ nDetEventAction::~nDetEventAction() {
 void nDetEventAction::BeginOfEventAction(const G4Event* evt)
 {
 
-    //G4cout<<"nDetEventAction::BeginOfEventAction()"<<G4endl;
+    G4cout<<"nDetEventAction::BeginOfEventAction()"<<G4endl;
   // initialisation per event.
 
   //New event, add the user information object
@@ -54,11 +61,15 @@ void nDetEventAction::BeginOfEventAction(const G4Event* evt)
   // clear vector for next event
   runAct->vectorClear();
 
-  fAnalysisManager=(nDetAnalysisManager*)nDetAnalysisManager::Instance();
+    G4cout <<"HERE" << G4endl;
 
-  if(fAnalysisManager)
-  fAnalysisManager->BeginOfEventAction(evt);
 
+    if(fAnalysisManager) {
+        fAnalysisManager->BeginOfEventAction(evt);
+        G4cout <<"Inside if" << G4endl;
+
+    }
+    G4cout <<"HERE" << G4endl;
 
 }
 
@@ -66,9 +77,9 @@ void nDetEventAction::BeginOfEventAction(const G4Event* evt)
  
 void nDetEventAction::EndOfEventAction(const G4Event* evt)
 {
-    //G4cout<<"nDetEventAction::EndOfEventAction()"<<G4endl;
+    G4cout<<"nDetEventAction::EndOfEventAction()"<<G4endl;
   // hit collection of event
-  //G4int NbHits = (evt->GetHCofThisEvent())->GetNumberOfCollections();
+  G4int NbHits = (evt->GetHCofThisEvent())->GetNumberOfCollections();
 
 //G4cout<< "Number of Collections "<<NbHits<<G4endl;
 

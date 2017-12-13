@@ -59,6 +59,7 @@ extern G4ThreadLocal G4Allocator<nDetHit>* nDetHitAllocator;
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 inline void* nDetHit::operator new(size_t)
 {
+  if(!nDetHitAllocator) nDetHitAllocator = new G4Allocator<nDetHit>;
   void *aHit;
   aHit = (void *) nDetHitAllocator->MallocSingle();
   return aHit;
@@ -67,6 +68,7 @@ inline void* nDetHit::operator new(size_t)
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 inline void nDetHit::operator delete(void *aHit)
 {
+  if(!nDetHitAllocator) nDetHitAllocator = new G4Allocator<nDetHit>;
   nDetHitAllocator->FreeSingle((nDetHit*) aHit);
 }
 

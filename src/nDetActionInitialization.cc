@@ -13,7 +13,6 @@
 #include "nDetSteppingAction.hh"
 #include "nDetConstruction.hh"
 
-
 nDetActionInitialization::nDetActionInitialization(nDetConstruction *detector) : G4VUserActionInitialization(), fDetectorConstruction(detector) {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -41,5 +40,4 @@ void nDetActionInitialization::Build() const{
     SetUserAction(new nDetTrackingAction);
     SetUserAction(new nDetStackingAction(theRunAction));
     SetUserAction(new nDetSteppingAction(fDetectorConstruction,theRunAction,theEventAction));
-
 }

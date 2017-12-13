@@ -14,11 +14,15 @@
 #include "nDetUserTrackingInformation.hh"
 #include "nDetUserEventInformation.hh"
 #include "TSystem.h"
+
+#include "G4UIcommand.hh"
+
+#include "G4Threading.hh"
 nDetAnalysisManager::nDetAnalysisManager(){
 
     G4cout << "nDetAnalysisManager::nDetAnalysisManager()->"<<this<< G4endl;
-    fFileName="Out.root";
-    fgossipFileName ="GossipOut.bin";
+    fFileName="Out";
+    //fgossipFileName ="GossipOut.bin";
     fMessenger = new nDetAnalysisMessenger(this);
     fScintCollectionID=-1;
     fSiPMCollectionID=-1;
@@ -44,11 +48,28 @@ void nDetAnalysisManager::OpenROOTFile(){
 
     G4cout << "nDetAnalysisManager::OpenROOTFile()->fFile " << fFile<< "." << G4endl;
     //fFileName=fileName;
+
+    G4String name;
+
+#ifdef G4MULTITHREADED
+
+    G4String s = G4UIcommand::ConvertToString(G4Threading::G4GetThreadId());
+    name=fFileName +"_"+s+".root";
+
+#else
+
+    name=fFileName + ".root";
+#endif
+
+    fFileName= name;
     fFile = new TFile(fFileName,"RECREATE");
+
     //fFile = new TFile("cona.root","RECREATE");
 
-    G4cout << "nDetAnalysisManager::OpenROOTFile()->" << fFileName << " has been opened." << G4endl;
-
+    if(fFile->IsOpen())
+        G4cout << "nDetAnalysisManager::OpenROOTFile()->" << fFileName << " has been opened." << G4endl;
+    else
+    return;
     //if(gSystem)
     //    gSystem->ProcessEvents();
 
@@ -210,6 +231,7 @@ void nDetAnalysisManager::BeginOfRunAction(const G4Run *aRun) {
     fRunNb=aRun->GetRunID();
 
     //OpenGossipFile();
+
 
     OpenROOTFile();
 
