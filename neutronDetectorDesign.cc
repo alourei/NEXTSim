@@ -67,7 +67,7 @@ int main(int argc, char** argv)
 #ifdef G4MULTITHREADED
   G4MTRunManager* runManager = new G4MTRunManager;
   //runManager->SetNumberOfThreads(G4Threading::G4GetNumberOfCores());
-  runManager->SetNumberOfThreads(1);
+  runManager->SetNumberOfThreads(2);
 
     G4cout<<"Running in multi-thread mode with "<<runManager->GetNumberOfThreads()<<" cores"<<G4endl;
 #else
