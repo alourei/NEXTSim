@@ -901,13 +901,16 @@ void nDetConstruction::DefineMaterials() {
     fEJ200MPT->AddConstProperty("RESOLUTIONSCALE",1.0); // Intrinsic resolution
 
     //fEJ200MPT->AddConstProperty("RISETIMECONSTANT", 0.9*ns); Geant4 10.1 TODO
-    fEJ200MPT->AddConstProperty("FASTSCINTILLATIONRISETIME", 0.9*ns);
+    //fEJ200MPT->AddConstProperty("FASTSCINTILLATIONRISETIME", 0.9*ns);
     //fEJ200MPT->AddConstProperty("FASTSCINTILLATIONRISETIME", 0.5*ns); //TODO DPL changing rise time to 500 ps
 
-    fEJ200MPT->AddConstProperty("FASTTIMECONSTANT", 2.1*ns);
-    //fEJ200MPT->AddConstProperty("FASTTIMECONSTANT", 0.5*ns); //TODO DPL Get Back to 2.1 ns
+    //fEJ200MPT->AddConstProperty("FASTTIMECONSTANT", 2.1*ns);
+    fEJ200MPT->AddConstProperty("FASTTIMECONSTANT", 0.01*ns); //TODO DPL Get Back to 2.1 ns
     fEJ200MPT->AddConstProperty("YIELDRATIO",1);// the strength of the fast component as a function of total scintillation yield
 
+
+    G4cout<<"EJ-200 Material Properties Table"<<G4endl;
+    fEJ200MPT->DumpTable();
 
     G4double pEF = 1; //SiPM efficiency (TODO - discuss it)
     G4double protonScalingFact = 1.35;

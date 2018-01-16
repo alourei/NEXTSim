@@ -27,8 +27,8 @@ nDetPrimaryGeneratorAction::nDetPrimaryGeneratorAction(nDetRunAction* run)
 : runAct(run)
 {
   G4int n_particle = 1;
-  //particleGun = new G4ParticleGun(n_particle);
-  particleGun = new G4GeneralParticleSource();
+  particleGun = new G4ParticleGun(n_particle);
+  //particleGun = new G4GeneralParticleSource();
   //default kinematic
   //
   G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
@@ -37,6 +37,8 @@ nDetPrimaryGeneratorAction::nDetPrimaryGeneratorAction(nDetRunAction* run)
  //G4ParticleDefinition* particle = G4Alpha::AlphaDefinition();
   G4ParticleDefinition* particle = G4Gamma::GammaDefinition();
 //  G4ParticleDefinition* particle = G4Electron::ElectronDefinition();
+
+    SetNeutronDecayData("85As.dat");
 
   particleGun->SetParticleDefinition(particle);
 
@@ -53,6 +55,11 @@ nDetPrimaryGeneratorAction::nDetPrimaryGeneratorAction(nDetRunAction* run)
 nDetPrimaryGeneratorAction::~nDetPrimaryGeneratorAction()
 {
     delete particleGun;
+    delete [] DaughterExEng;
+    delete [] IntensityRaw;
+    delete [] ProbRaw;
+    delete [] ProbLimit;
+
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -77,6 +84,8 @@ void nDetPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 
   //particleGun->SetParticlePosition(G4ThreeVector(x, y, z));
 
+    particleGun->SetParticleEnergy(GetNeutronEng()*keV);
+
   particleGun->GeneratePrimaryVertex(anEvent);
 
   G4ThreeVector VertexPosition= particleGun->GetParticlePosition();
@@ -90,6 +99,98 @@ void nDetPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   runAct->setNeutronIncidentPositionZ(VertexPosition.z());
 
 }
+
+
+void nDetPrimaryGeneratorAction::SetNeutronDecayData(G4String theFileName){
+
+    G4cout<<"Getting Energies for neutrons"<<G4endl;
+
+
+    std::fstream theFile;
+    theFile.open(theFileName, std::fstream::in );
+    theFile >> NumberOfLines;
+
+    DaughterExEng = new G4double[NumberOfLines];
+    IntensityRaw = new G4double[NumberOfLines];
+    ProbRaw = new G4double[NumberOfLines];
+    ProbLimit = new G4double[NumberOfLines];
+    Normalization = 0.;
+
+    if(theFile.good())
+    {
+        G4cout << "Loading Data For FileName = " << theFileName << G4endl;
+        for(G4int i=0; i<NumberOfLines; i++)
+        {
+            G4double theEnergy = 0.;    // Nucleus (23Mg) excitation eng.
+            G4double theIntensity = 0.;  // absolute (not in percent)
+
+            theFile >> theEnergy >> theIntensity;
+
+            G4cout << theEnergy << "  " << theIntensity << G4endl;
+
+            DaughterExEng[i] = theEnergy;
+            IntensityRaw[i] = theIntensity;
+            Normalization += theIntensity;
+        }
+        G4cout << "Successfully Loaded !  Normalization = " << Normalization << G4endl;
+        theFile.close();
+
+        for(G4int i=0; i<NumberOfLines; i++)
+        {
+            ProbRaw[i] = IntensityRaw[i]/Normalization;
+        }
+    }
+
+    else
+    {
+        G4cerr << "File = " << theFileName << " not found or in improper format." << G4endl;
+        G4ExceptionDescription description;
+        description<< "File not found!!";
+        G4Exception("nDetPrimaryGeneratorAction::SetNeutronDecayData()","DecayData_002",FatalException,description);
+    }
+
+    // Setup Limits and Distances
+
+    for(G4int i=0; i<NumberOfLines; i++)
+    {
+        if(i == 0)
+        {ProbLimit[i] = ProbRaw[i];}
+        else
+        {ProbLimit[i] = ProbLimit[i-1]+ProbRaw[i];}
+    }
+
+}
+
+
+
+
+G4double nDetPrimaryGeneratorAction::GetNeutronEng(){
+
+    G4double RecRandnum = G4UniformRand();
+    // Search for Prob Interval ----
+
+    //G4cout<<"RANDOM "<<RecRandnum<<G4endl;
+
+    G4int ProbInt = 0;
+
+    for(G4int k=0; k<NumberOfLines; k++)
+    {
+        if(k == 0 && RecRandnum < ProbLimit[k] && ProbRaw[k] > 0.)
+        { ProbInt = k; }
+        else if( k > 0 && RecRandnum >= ProbLimit[k-1] && RecRandnum < ProbLimit[k] && ProbRaw[k] > 0.)
+        { ProbInt = k; }
+        //else
+        // ProbInt = NumberOfLines;
+    }
+
+    G4double EnergyOut = DaughterExEng[ProbInt];
+
+    //G4cout<<"Energy "<<ProbInt<<" "<<DaughterExEng[ProbInt]<<G4endl;
+
+    return EnergyOut;
+
+}
+
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 

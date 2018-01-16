@@ -28,12 +28,26 @@ class nDetPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
    ~nDetPrimaryGeneratorAction();
 
   public:
+
     void GeneratePrimaries(G4Event*);
+  //DPL Added Sampling in neutron Energies
+    void SetNeutronDecayData(G4String theFileName);
+    G4double GetNeutronEng();
+
 
   private:
-    //G4ParticleGun* particleGun;
-    G4GeneralParticleSource *particleGun;
+    G4ParticleGun* particleGun;
+    //G4GeneralParticleSource *particleGun;
     nDetRunAction* runAct;
+
+    //DPL
+    G4int NumberOfLines;
+    G4double Normalization;
+    G4double *DaughterExEng;
+    G4double *IntensityRaw;
+    G4double *ProbRaw;
+    G4double *ProbLimit;
+
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

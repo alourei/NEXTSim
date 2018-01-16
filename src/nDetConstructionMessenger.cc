@@ -38,7 +38,7 @@ nDetConstructionMessenger::nDetConstructionMessenger(nDetConstruction* detector)
 
 
     fMylarThicknessCmd=new G4UIcmdWithADouble("/nDet/detector/setMylarThickness",this);
-    fMylarThicknessCmd->SetGuidance("Defines the thickness of the plastic the mylar in mm (0 for no mylar)");
+    fMylarThicknessCmd->SetGuidance("Defines the thickness of  the mylar in mm (0 for no mylar)");
 
 
     fTrapezoidLengthCmd=new G4UIcmdWithADouble("/nDet/detector/setTrapezoidLength",this);

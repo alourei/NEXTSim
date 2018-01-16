@@ -104,6 +104,7 @@ that didn't work... this is horribly deprecated*/
 
   G4OpticalPhysics *theOpticalPhysics=new G4OpticalPhysics();
   theOpticalPhysics->SetScintillationByParticleType(true);
+  theOpticalPhysics->SetFiniteRiseTime(false);
   physics->ReplacePhysics(theOpticalPhysics);
   runManager->SetUserInitialization( physics );
 
