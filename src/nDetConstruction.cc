@@ -45,14 +45,15 @@ nDetConstruction::nDetConstruction()
   // the world volume is 10 mm bigger than assembly volume in three dimensions
 
     G4cout<<"nDetConstruction::nDetConstruction()->"<<this<<G4endl;
-  G4double margin = 500*mm;
+  G4double margin = 1500*mm;
 
   fDetectorMessenger=new nDetConstructionMessenger(this);
 
     //fGeometry="ellipse";
     //fGeometry="hexagon";
     //fGeometry="array";
-    fGeometry="rectangle";
+    //fGeometry="rectangle";
+    fGeometry="bent";
 
     fCheckOverlaps = false;
   fTeflonThickness = 0.11*mm;
@@ -128,6 +129,9 @@ G4VPhysicalVolume* nDetConstruction::ConstructDetector(){
         buildRectangle();
     if(fGeometry == "array")
     buildArray();
+    if(fGeometry == "bent")
+        buildCylinder();
+
   return expHall_physV;
 }
 
@@ -1085,7 +1089,7 @@ void nDetConstruction::DefineMaterials() {
 void nDetConstruction::buildSiPMs() {
 
 
-    if(fGeometry == "ellipse" || fGeometry == "rectangle") {
+    if(fGeometry == "ellipse" || fGeometry == "rectangle" || fGeometry == "bent") {
         greaseX = SiPM_dimension;
         greaseZ = SiPM_dimension;
         qwSiPMx = SiPM_dimension;
@@ -1992,6 +1996,64 @@ void nDetConstruction::buildArray() {
 
 
 
+void nDetConstruction::buildCylinder(){
+
+    G4double Distance = 50*cm;
+    fDetectorLength = 25*cm;
+    fDetectorWidth = 6*mm;
+    G4double Length = fDetectorLength;
+    G4double Width = fDetectorWidth/2+fTeflonThickness;
+
+    G4double StartAngle = 0*radian;
+    G4double EndAngle = Length/Distance*radian;
+    //G4double EndAngle = 90*degree;
+
+
+    G4cout<<"The angle is "<<EndAngle/degree<<G4endl;
+
+    G4double Rmin = Distance-fTeflonThickness-fDetectorThickness/2;
+    G4double Rmax = Distance+fTeflonThickness+fDetectorThickness/2;
+
+    G4Tubs *theWrapping = new G4Tubs("Wrapping",Rmin,Rmax,Width,StartAngle,EndAngle);
+
+    assembly_logV = new G4LogicalVolume(theWrapping,fTeflon,"wrap_log");
+
+    G4RotationMatrix *theRot=new G4RotationMatrix();
+    theRot->rotateX(90*degree);
+    theRot->rotateZ(EndAngle/2);
+    G4ThreeVector thepos(-Distance,0,0);
+
+    assembly_physV = new G4PVPlacement(theRot,thepos,assembly_logV,"wrapping_phys",expHall_logV,0,0,false);
+
+
+    fWrapSkinSurface = new G4LogicalSkinSurface("WrapSkin",assembly_logV,fTeflonOpticalSurface);
+
+    Rmin = Distance-fDetectorThickness/2;
+    Rmax = Distance+fDetectorThickness/2;
+    Width = fDetectorWidth/2;
+
+    G4Tubs *theScint = new G4Tubs("Scint",Rmin,Rmax,Width,StartAngle,EndAngle);
+
+    ej200_logV = new G4LogicalVolume(theScint,fEJ200,"Scint");
+
+    G4VisAttributes* ej200_VisAtt= new G4VisAttributes(G4Colour(0.0,0.0,1.0));//blue
+    ej200_logV->SetVisAttributes(ej200_VisAtt);
+
+    G4VPhysicalVolume *sci_phy=new G4PVPlacement(0,G4ThreeVector(0,0,0),ej200_logV,"sci_phys",assembly_logV,0,0,false);
+    //buildSiPMs();
+
+    G4AssemblyVolume *theSiPM=MakeSiPM();
+
+    G4ThreeVector SiPMPosition(0,0,-fDetectorLength/2);
+    G4RotationMatrix *motherRotation=new G4RotationMatrix();
+    motherRotation->rotateX(90 * deg);
+
+    theSiPM->MakeImprint(expHall_logV,SiPMPosition,motherRotation,0,false);
+
+    return;
+}
+
+
 G4VSolid* nDetConstruction::ConstructNextModule(G4String name, G4double length, G4double width1,G4double width2, G4double thickness) {
 
 
@@ -2021,5 +2083,67 @@ G4VSolid* nDetConstruction::ConstructNextModule(G4String name, G4double length, 
 
 
     return themodule;
+
+}
+
+
+G4AssemblyVolume* nDetConstruction::MakeSiPM(){
+
+        greaseX = SiPM_dimension;
+        greaseZ = SiPM_dimension;
+        qwSiPMx = SiPM_dimension;
+        qwSiPMz = SiPM_dimension;
+        psSiPMx = SiPM_dimension;
+        psSiPMz = SiPM_dimension;
+
+    //The Grease
+    G4Box* grease_solidV = new G4Box("grease", greaseX, greaseY, greaseZ);
+    grease_logV = new G4LogicalVolume(grease_solidV, fGrease, "grease_logV", 0, 0, 0);
+    G4VisAttributes* grease_VisAtt= new G4VisAttributes(G4Colour(1.0,0.0,0.0));//red
+    //grease_VisAtt->SetForceSolid(true);
+    grease_logV->SetVisAttributes(grease_VisAtt);
+
+    G4AssemblyVolume *theCasing=new G4AssemblyVolume();
+
+    G4ThreeVector position(0,greaseY+qwSiPMy,0);
+        G4RotationMatrix *rot = new G4RotationMatrix();
+        //rot->rotateX(90 * deg);
+
+        theCasing->AddPlacedVolume(grease_logV, position, rot);
+
+    //The SiPM window
+    G4Box* qwSiPM_solidV = new G4Box("qwSiPM_solidV", qwSiPMx, qwSiPMy, qwSiPMz);
+
+    qwSiPM_logV = new G4LogicalVolume(qwSiPM_solidV,fSiO2,"SiPMwindow_log");
+
+    G4VisAttributes* window_VisAtt= new G4VisAttributes(G4Colour(0.0,1.0,1.0));//cyan
+    //window_VisAtt->SetForceSolid(true);
+    qwSiPM_logV->SetVisAttributes(window_VisAtt);
+
+        G4ThreeVector position2(0,0,0);
+        //G4RotationMatrix *rot = new G4RotationMatrix();
+        //rot->rotateX(90 * deg);
+
+        theCasing->AddPlacedVolume(qwSiPM_logV, position2, rot);
+
+    //the Sensitive surface
+
+    G4Box* psSiPM_solidV = new G4Box("psSiPM_solidV", psSiPMx, psSiPMy, psSiPMz);
+
+
+    psSiPM_logV = new G4LogicalVolume(psSiPM_solidV,fSil, "psSiPM_logV", 0, 0, 0);
+
+    G4LogicalSkinSurface *SiPMSurface=new G4LogicalSkinSurface("theSiPM",psSiPM_logV,fSiliconPMOpticalSurface);
+
+    G4VisAttributes* psSiPM_VisAtt= new G4VisAttributes(G4Colour(0.1,1.0,0.0));//magenta
+    psSiPM_VisAtt->SetForceSolid(true);
+    psSiPM_logV->SetVisAttributes(psSiPM_VisAtt);
+        G4ThreeVector position3(0, -psSiPMy-qwSiPMy,0);
+       // G4RotationMatrix *rot = new G4RotationMatrix();
+        //rot->rotateX(90 * deg);
+
+        theCasing->AddPlacedVolume(psSiPM_logV, position3, rot);
+
+return theCasing;
 
 }

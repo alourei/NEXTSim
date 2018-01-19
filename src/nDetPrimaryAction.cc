@@ -5,6 +5,7 @@
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
+#include <G4Geantino.hh>
 #include "nDetPrimaryGeneratorAction.hh"
 
 #include "G4Event.hh"
@@ -34,10 +35,11 @@ nDetPrimaryGeneratorAction::nDetPrimaryGeneratorAction(nDetRunAction* run)
   G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
 
   //G4ParticleDefinition* particle = G4Neutron::NeutronDefinition();
- //G4ParticleDefinition* particle = G4Alpha::AlphaDefinition();
-  G4ParticleDefinition* particle = G4Gamma::GammaDefinition();
-//  G4ParticleDefinition* particle = G4Electron::ElectronDefinition();
+  //G4ParticleDefinition* particle = G4Alpha::AlphaDefinition();
+  //G4ParticleDefinition* particle = G4Gamma::GammaDefinition();
+  //G4ParticleDefinition* particle = G4Electron::ElectronDefinition();
 
+    G4ParticleDefinition *particle =G4Geantino::GeantinoDefinition();
     SetNeutronDecayData("85As.dat");
 
   particleGun->SetParticleDefinition(particle);
@@ -81,18 +83,27 @@ void nDetPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 //  y=0;
 //  z=0;
 
+    G4ThreeVector direction(0,0,0);
 
-  //particleGun->SetParticlePosition(G4ThreeVector(x, y, z));
+    G4double Pi=4*atan(1.0);
+
+    G4double theta = atan(12.5/100)*rad;
+    G4double phi0 = -atan(.3/100)*radian;
+    G4double phi = atan(.3/100)*radian;
+
+    GenerateIsotropicDirectionDistribution(&direction,Pi/2-theta,Pi/2+theta,phi0,phi);
+
+    particleGun->SetParticleMomentumDirection(direction);
 
     particleGun->SetParticleEnergy(GetNeutronEng()*keV);
 
-  particleGun->GeneratePrimaryVertex(anEvent);
+    particleGun->GeneratePrimaryVertex(anEvent);
 
-  G4ThreeVector VertexPosition= particleGun->GetParticlePosition();
+    G4ThreeVector VertexPosition= particleGun->GetParticlePosition();
 
-  nDetAnalysisManager *theManager=(nDetAnalysisManager*)nDetAnalysisManager::Instance();
+    nDetAnalysisManager *theManager=(nDetAnalysisManager*)nDetAnalysisManager::Instance();
 
-  theManager->GeneratePrimaries(anEvent);
+    theManager->GeneratePrimaries(anEvent);
 
   runAct->setNeutronIncidentPositionX(VertexPosition.x());
   runAct->setNeutronIncidentPositionY(VertexPosition.y());
@@ -190,6 +201,27 @@ G4double nDetPrimaryGeneratorAction::GetNeutronEng(){
     return EnergyOut;
 
 }
+
+
+
+void nDetPrimaryGeneratorAction::GenerateIsotropicDirectionDistribution
+        (G4ThreeVector* direction,
+         G4double thetaMin,
+         G4double thetaMax,
+         G4double phiMin,
+         G4double phiMax)
+{
+    G4double cosThetaMin = cos(thetaMin);
+    G4double cosThetaMax = cos(thetaMax);
+
+    //assumption: cosThetaMin > cosThetaMax
+    G4double randomCosTheta = G4UniformRand()*(cosThetaMin-cosThetaMax) + cosThetaMax;
+    G4double randomSinTheta = sqrt(1.0 - randomCosTheta * randomCosTheta);
+    G4double randomPhi = G4UniformRand()*(phiMax-phiMin) + phiMin;
+
+    *direction = G4ThreeVector(cos(randomPhi)*randomSinTheta, sin(randomPhi)*randomSinTheta, randomCosTheta);
+}
+
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

@@ -191,6 +191,8 @@ private:
     void buildEllipse2();
     void buildRectangle();
     void buildArray();
+    void buildCylinder();
+    G4AssemblyVolume* MakeSiPM();
 
     G4VSolid* ConstructEllipse(G4String name,G4ThreeVector dimensions,G4double thickness);
 

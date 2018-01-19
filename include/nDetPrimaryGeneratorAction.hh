@@ -33,6 +33,11 @@ class nDetPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
   //DPL Added Sampling in neutron Energies
     void SetNeutronDecayData(G4String theFileName);
     G4double GetNeutronEng();
+    void GenerateIsotropicDirectionDistribution(G4ThreeVector* direction,
+                                                                            G4double thetaMin,
+                                                                            G4double thetaMax,
+                                                                            G4double phiMin,
+                                                                            G4double phiMax);
 
 
   private:
