@@ -59,12 +59,12 @@ void nDetSteppingAction::UserSteppingAction(const G4Step* aStep)
 
   G4String name = aStep->GetTrack()->GetMaterial()->GetName();
 
-    //if (aStep->GetTrack()->GetDefinition() == G4OpticalPhoton::OpticalPhotonDefinition() && name == "G4_AIR") {
+    if (aStep->GetTrack()->GetDefinition() == G4OpticalPhoton::OpticalPhotonDefinition() && name == "G4_AIR") {
 
-    //    aStep->GetTrack()->SetTrackStatus(fStopAndKill);
+        aStep->GetTrack()->SetTrackStatus(fStopAndKill);
 
     //    G4cout << "Transmitted Optical Photon Track Killed" << G4endl;
-    //}
+    }
 
 
     nDetUserTrackingInformation *theTrackingInfo;

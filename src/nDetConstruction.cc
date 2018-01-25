@@ -2004,9 +2004,11 @@ void nDetConstruction::buildCylinder(){
     G4double Length = fDetectorLength;
     G4double Width = fDetectorWidth/2+fTeflonThickness;
 
-    G4double StartAngle = 0*radian;
-    G4double EndAngle = Length/Distance*radian;
-    //G4double EndAngle = 90*degree;
+    G4double StartAngle =-(Length+4*greaseY+4*qwSiPMy+4*psSiPMy+2*fTeflonThickness)/Distance/2*radian;
+    G4double EndAngle = (Length+4*greaseY+4*qwSiPMy+4*psSiPMy+2*fTeflonThickness)/Distance*radian;
+    //G4double EndAngle = (Length)/Distance*radian;
+
+
 
 
     G4cout<<"The angle is "<<EndAngle/degree<<G4endl;
@@ -2020,7 +2022,7 @@ void nDetConstruction::buildCylinder(){
 
     G4RotationMatrix *theRot=new G4RotationMatrix();
     theRot->rotateX(90*degree);
-    theRot->rotateZ(EndAngle/2);
+    //theRot->rotateZ(EndAngle/2);
     G4ThreeVector thepos(-Distance,0,0);
 
     assembly_physV = new G4PVPlacement(theRot,thepos,assembly_logV,"wrapping_phys",expHall_logV,0,0,false);
@@ -2032,23 +2034,39 @@ void nDetConstruction::buildCylinder(){
     Rmax = Distance+fDetectorThickness/2;
     Width = fDetectorWidth/2;
 
+
+    StartAngle = -Length/Distance/2*radian;
+    EndAngle = Length/Distance*radian;
+
+
+
     G4Tubs *theScint = new G4Tubs("Scint",Rmin,Rmax,Width,StartAngle,EndAngle);
 
     ej200_logV = new G4LogicalVolume(theScint,fEJ200,"Scint");
 
     G4VisAttributes* ej200_VisAtt= new G4VisAttributes(G4Colour(0.0,0.0,1.0));//blue
+
+    //ej200_VisAtt->SetForceSolid(true);
     ej200_logV->SetVisAttributes(ej200_VisAtt);
 
     G4VPhysicalVolume *sci_phy=new G4PVPlacement(0,G4ThreeVector(0,0,0),ej200_logV,"sci_phys",assembly_logV,0,0,false);
-    //buildSiPMs();
+
 
     G4AssemblyVolume *theSiPM=MakeSiPM();
 
-    G4ThreeVector SiPMPosition(0,0,-fDetectorLength/2);
-    G4RotationMatrix *motherRotation=new G4RotationMatrix();
-    motherRotation->rotateX(90 * deg);
+    G4double y_Translation= -Distance*sin(EndAngle/2)-(2*greaseY+qwSiPMy)*cos(EndAngle/2);
+    G4double x_Translation = Distance-Distance*(1-cos(EndAngle/2))-(2*greaseY+qwSiPMy)*sin(EndAngle/2);
 
-    theSiPM->MakeImprint(expHall_logV,SiPMPosition,motherRotation,0,false);
+    G4ThreeVector SiPMPosition(x_Translation,y_Translation,0);
+    //SiPMPosition.setX(x_Translation*(cos(EndAngle/2)-1));
+    G4RotationMatrix *motherRotation=new G4RotationMatrix();
+    //motherRotation->rotateX(90 * deg);
+    motherRotation->rotateZ(-EndAngle/2);
+    //motherRotation->rotate(-EndAngle/2,G4ThreeVector(0,0,1));
+    theSiPM->MakeImprint(assembly_logV,SiPMPosition,motherRotation,0,fCheckOverlaps);
+    SiPMPosition.setY(-y_Translation);
+    motherRotation->rotateZ(180*deg+EndAngle);
+    theSiPM->MakeImprint(assembly_logV,SiPMPosition,motherRotation,0,fCheckOverlaps);
 
     return;
 }

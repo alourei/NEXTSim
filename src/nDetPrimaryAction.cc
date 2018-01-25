@@ -95,7 +95,7 @@ void nDetPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 
     particleGun->SetParticleMomentumDirection(direction);
 
-    particleGun->SetParticleEnergy(GetNeutronEng()*keV);
+    //particleGun->SetParticleEnergy(GetNeutronEng()*keV); DPL TODO Change back to Decay
 
     particleGun->GeneratePrimaryVertex(anEvent);
 
