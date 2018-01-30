@@ -65,6 +65,7 @@ nDetConstruction::nDetConstruction()
   fTrapezoidLength = 1*inch;
   fHexagonRadius = 5*cm;
   fDetectorThickness = 0.24*inch;
+  fDistance = 50*cm;
   //fDetectorWidth = 0.24*inch;
 
   SiPM_dimension=3*mm;
@@ -1998,7 +1999,7 @@ void nDetConstruction::buildArray() {
 
 void nDetConstruction::buildCylinder(){
 
-    G4double Distance = 50*cm;
+    G4double Distance = fDistance;
     fDetectorLength = 25*cm;
     fDetectorWidth = 6*mm;
     G4double Length = fDetectorLength;

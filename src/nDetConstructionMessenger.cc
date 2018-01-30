@@ -8,7 +8,7 @@
 #include "G4UIcommand.hh"
 #include "G4UIcmdWithAString.hh"
 #include "G4UIdirectory.hh"
-#include "G4UIcmdWith3VectorAndUnit.hh"
+#include "G4UIcmdWithADoubleAndUnit.hh"
 #include "G4UIcmdWithADouble.hh"
 nDetConstructionMessenger::nDetConstructionMessenger(nDetConstruction* detector)
         :fDetector(detector){
@@ -38,7 +38,7 @@ nDetConstructionMessenger::nDetConstructionMessenger(nDetConstruction* detector)
 
 
     fMylarThicknessCmd=new G4UIcmdWithADouble("/nDet/detector/setMylarThickness",this);
-    fMylarThicknessCmd->SetGuidance("Defines the thickness of  the mylar in mm (0 for no mylar)");
+    fMylarThicknessCmd->SetGuidance("Defines the thickness of mylar the mylar in mm (0 for no mylar)");
 
 
     fTrapezoidLengthCmd=new G4UIcmdWithADouble("/nDet/detector/setTrapezoidLength",this);
@@ -47,6 +47,10 @@ nDetConstructionMessenger::nDetConstructionMessenger(nDetConstruction* detector)
     fUpdateCmd=new G4UIcommand("/nDet/detector/update",this);
     fUpdateCmd->SetGuidance("Updates the detector Geometry");
     //std::cout<<"nDetConstructionMessenger::nDetConstructionMessenger()->"<<fGeometryCmd<<std::endl;
+
+    fDistanceCmd=new G4UIcmdWithADoubleAndUnit("/nDet/detector/setDistance",this);
+    fDistanceCmd->SetGuidance("Definesthe distance between the detector and the origin");
+    fDistanceCmd->SetDefaultUnit("cm");
 
 }
 
@@ -71,6 +75,8 @@ nDetConstructionMessenger::~nDetConstructionMessenger(){
     delete fMylarThicknessCmd;
 
     delete fUpdateCmd;
+
+    delete fDistanceCmd;
 
     //G4cout<<"nDetConstructionMessenger::~nDetConstructionMessenger()->"<<fGeometryCmd<<G4endl;
 }
@@ -113,7 +119,11 @@ void nDetConstructionMessenger::SetNewValue(G4UIcommand* command,G4String newVal
     }
 
     if(command == fUpdateCmd){
-
        fDetector->UpdateGeometry();
+    }
+
+    if(command == fDistanceCmd){
+        G4double val =fDistanceCmd->ConvertToDimensionedDouble(newValue);
+        fDetector->SetDistance(val);
     }
 }

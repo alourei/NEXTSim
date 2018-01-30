@@ -74,8 +74,11 @@ class nDetConstruction : public G4VUserDetectorConstruction
     void SetMylarThickness(G4double val){fMylarThickness=val;}
     void SetDetectorWidth(G4double val){fDetectorWidth=val;}
     void SetHexagonRadius(G4double val){fHexagonRadius=val;}
+    void SetDistance(G4double val){fDistance=val;}
 
     G4String GetGeometry(){return fGeometry;}
+    G4double GetDistance(){return fDistance;}
+
     void UpdateGeometry();
 
 
@@ -121,6 +124,8 @@ private:
     G4double fHexagonRadius;
 
     G4int fNdetectors;
+
+    G4double fDistance;
 
     G4bool fCheckOverlaps;
     G4String fGeometry;
