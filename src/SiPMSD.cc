@@ -59,6 +59,8 @@ G4bool SiPMSD::ProcessHits_constStep(const G4Step *aStep, G4TouchableHistory *RO
     if(aStep->GetTrack()->GetDefinition()
        != G4OpticalPhoton::OpticalPhotonDefinition()) return false;
 
+    G4TouchableHandle theTouchable=aStep->GetPreStepPoint()->GetTouchableHandle();
+
     G4int SipmNumber=
             aStep->GetPostStepPoint()->GetTouchable()->GetReplicaNumber();
     //G4cout<<"SiPM number "<<SipmNumber<<G4endl;
@@ -71,7 +73,11 @@ G4bool SiPMSD::ProcessHits_constStep(const G4Step *aStep, G4TouchableHistory *RO
     //      <<" "<<aStep->GetPostStepPoint()->GetTouchable()->GetReplicaNumber()<<G4endl;
 
 
-    G4ThreeVector pos = aStep->GetPostStepPoint()->GetPosition();
+    G4ThreeVector worldPosition=aStep->GetPreStepPoint()->GetPosition();
+
+    //G4ThreeVector pos = aStep->GetPostStepPoint()->GetPosition();
+
+    G4ThreeVector pos = theTouchable->GetHistory()->GetTopTransform().TransformPoint(worldPosition);
     G4double  time = aStep->GetPostStepPoint()->GetGlobalTime();
     G4double  wavelength = CLHEP::h_Planck*CLHEP::c_light/aStep->GetTrack()->GetTotalEnergy()*1e6;
 
@@ -82,7 +88,7 @@ G4bool SiPMSD::ProcessHits_constStep(const G4Step *aStep, G4TouchableHistory *RO
     //hit->SetTime( aStep->GetPostStepPoint()->GetLocalTime() );
     hit->SetPos( aStep->GetPostStepPoint()->GetPosition() );
     hit->SetTrackID(aStep->GetTrack()->GetTrackID());
-    hit->SetWaveLength(CLHEP::h_Planck*CLHEP::c_light/aStep->GetTrack()->GetTotalEnergy()*1e6);
+    hit->SetWaveLength(wavelength);
 
 
     //fphotons->AddPhoton(pos.x(),pos.y(),time,wavelength);
