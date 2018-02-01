@@ -29,6 +29,8 @@ public:
 
     void SetTime(G4double t) { time = t; };
     G4double GetTime() { return time; };
+    void SetLocalTime(G4double t) { local_time = t; };
+    G4double GetLocalTime() { return local_time; };
     void SetPos(G4ThreeVector xyz) { pos = xyz; };
     G4ThreeVector GetPos() { return pos; };
     void SetSiPMNumber(G4int num) { SiPMnumber = num; }
@@ -42,6 +44,7 @@ public:
 
 private:
     G4double time;
+    G4double local_time;
     G4ThreeVector pos;
     G4int SiPMnumber;
     G4double Wavelength;

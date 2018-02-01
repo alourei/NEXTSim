@@ -90,6 +90,7 @@ void nDetAnalysisManager::OpenROOTFile(){
     fTree->Branch("vSDPhotonPositionY", &fvSDPhotonPositionY);
     fTree->Branch("vSDPhotonPositionZ", &fvSDPhotonPositionZ);
     fTree->Branch("vSDPhotonTime", &fvSDPhotonTime);
+    fTree->Branch("vSDPhotonLocalTime", &fvSDPhotonLocalTime);
     fTree->Branch("vSDPhotonWavelength", &fvSDPhotonWavelength);
     fTree->Branch("vSDDetectorNumber", &fvSDNumber);
     fTree->Branch("vSDTrackID", &fvSDPhotonTrackID);
@@ -179,6 +180,7 @@ void nDetAnalysisManager::ResetEvent() {
     std::vector<double>().swap(fvSDPhotonPositionY);
     std::vector<double>().swap(fvSDPhotonPositionZ);
     std::vector<double>().swap(fvSDPhotonTime);
+    std::vector<double>().swap(fvSDPhotonLocalTime);
     std::vector<double>().swap(fvSDPhotonWavelength);
     std::vector<double>().swap(fvTrackLength);
     std::vector<double>().swap(fvTrackTime);
@@ -358,6 +360,7 @@ void nDetAnalysisManager::EndOfEventAction(const G4Event *anEvent){
 
             G4ThreeVector pos = (*DHC_SiPM)[i]->GetPos();
             G4double ptime = (*DHC_SiPM)[i]->GetTime() / ns;
+            G4double localtime = (*DHC_SiPM)[i]->GetLocalTime() / ns;
             G4int detector=(*DHC_SiPM)[i]->GetSiPMNumber();
             G4int trackID=(*DHC_SiPM)[i]->GetTrackID();
             G4double wavelength=(*DHC_SiPM)[i]->GetWaveLength();
@@ -367,6 +370,7 @@ void nDetAnalysisManager::EndOfEventAction(const G4Event *anEvent){
              fvSDPhotonPositionY.push_back(pos.y()/mm);
              fvSDPhotonPositionZ.push_back(pos.z()/mm);
              fvSDPhotonTime.push_back(ptime);
+             fvSDPhotonLocalTime.push_back(localtime);
              fvSDPhotonWavelength.push_back(wavelength);
 
            float x=(float)pos.x()/mm;

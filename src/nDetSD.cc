@@ -13,6 +13,7 @@
 #include "G4ios.hh"
 #include "G4OpBoundaryProcess.hh"
 #include "G4ProcessManager.hh"
+#include "G4Neutron.hh"
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -65,7 +66,8 @@ G4bool nDetSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
           G4cout<<"**************** SD stop ************"<< G4endl;
           */
             if(aStep->GetTrack()->GetDefinition() != G4OpticalPhoton::OpticalPhotonDefinition()){
-          G4double edep=aStep->GetTotalEnergyDeposit();
+              //if(aStep->GetTrack()->GetDefinition() == G4Neutron::NeutronDefinition()){
+                    G4double edep=aStep->GetTotalEnergyDeposit();
 	      nDetHit* newHit = new nDetHit();
   	      newHit->SetTime( aStep->GetPreStepPoint()->GetGlobalTime() );
           newHit->SetPos( aStep->GetPreStepPoint()->GetPosition() );

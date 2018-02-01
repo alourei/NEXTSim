@@ -40,7 +40,8 @@ nDetPrimaryGeneratorAction::nDetPrimaryGeneratorAction(nDetRunAction* run)
   //G4ParticleDefinition* particle = G4Electron::ElectronDefinition();
 
     G4ParticleDefinition *particle =G4Geantino::GeantinoDefinition();
-    SetNeutronDecayData("85As.dat");
+    //SetNeutronDecayData("85As.dat");
+    SetNeutronDecayData("133In.dat");
 
   particleGun->SetParticleDefinition(particle);
 
