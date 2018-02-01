@@ -79,7 +79,7 @@ G4bool SiPMSD::ProcessHits_constStep(const G4Step *aStep, G4TouchableHistory *RO
     hit->SetSiPMNumber(SipmNumber);
     hit->SetTime( aStep->GetPostStepPoint()->GetGlobalTime() );
     //DPL TODO change back to global time for TOF
-    //hit->SetTime( aStep->GetPostStepPoint()->GetLocalTime() );
+    hit->SetLocalTime( aStep->GetPostStepPoint()->GetLocalTime() );
     hit->SetPos( aStep->GetPostStepPoint()->GetPosition() );
     hit->SetTrackID(aStep->GetTrack()->GetTrackID());
     hit->SetWaveLength(CLHEP::h_Planck*CLHEP::c_light/aStep->GetTrack()->GetTotalEnergy()*1e6);

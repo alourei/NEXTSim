@@ -27,6 +27,7 @@ SiPMHit::SiPMHit(const SiPMHit &right)
     pos = right.pos;
     SiPMnumber=right.SiPMnumber;
     Wavelength=right.Wavelength;
+    local_time=right.local_time;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -36,6 +37,7 @@ const SiPMHit& SiPMHit::operator=(const SiPMHit &right)
     pos = right.pos;
     SiPMnumber=right.SiPMnumber;
     Wavelength=right.Wavelength;
+    local_time=right.local_time;
     return *this;
 }
 
@@ -66,6 +68,7 @@ void SiPMHit::Draw()
 void SiPMHit::Print()
 {
     G4cout << "  time: " << G4BestUnit(time,"Time")
+           << "  local time: " << G4BestUnit(local_time,"Time")
            << "  position: " << G4BestUnit(pos,"Length") << G4endl
            << "  wavelength: " << G4BestUnit(Wavelength,"Length") << G4endl
            << "  detector number: " << GetSiPMNumber() << G4endl;

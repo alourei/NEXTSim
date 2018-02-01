@@ -109,6 +109,7 @@ private:
     std::vector<double>     fvSDPhotonPositionY;
     std::vector<double>     fvSDPhotonPositionZ;
     std::vector<double>     fvSDPhotonTime;
+    std::vector<double>     fvSDPhotonLocalTime;
     std::vector<double>     fvSDPhotonWavelength;
     std::vector<int>        fvSDNumber;
     std::vector<int>        fvSDPhotonTrackID;

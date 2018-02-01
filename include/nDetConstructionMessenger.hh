@@ -34,12 +34,12 @@ private:
     G4UIdirectory*    fDetectorDir;
 
     G4UIcmdWithAString*  fGeometryCmd;
-    G4UIcmdWithADouble *fSiliconDimensionsCmd;
-    G4UIcmdWithADouble *fDetectorLengthCmd;
-    G4UIcmdWithADouble *fDetectorWidthCmd;
-    G4UIcmdWithADouble *fDetectorThicknessCmd;
-    G4UIcmdWithADouble *fTrapezoidLengthCmd;
-    G4UIcmdWithADouble *fMylarThicknessCmd;
+    G4UIcmdWithADoubleAndUnit *fSiliconDimensionsCmd;
+    G4UIcmdWithADoubleAndUnit *fDetectorLengthCmd;
+    G4UIcmdWithADoubleAndUnit *fDetectorWidthCmd;
+    G4UIcmdWithADoubleAndUnit *fDetectorThicknessCmd;
+    G4UIcmdWithADoubleAndUnit *fTrapezoidLengthCmd;
+    G4UIcmdWithADoubleAndUnit *fMylarThicknessCmd;
     G4UIcmdWithADoubleAndUnit *fDistanceCmd;
     G4UIcommand*         fUpdateCmd;
 
