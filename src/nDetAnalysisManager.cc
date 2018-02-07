@@ -23,6 +23,8 @@ nDetAnalysisManager::nDetAnalysisManager(){
     fScintCollectionID=-1;
     fSiPMCollectionID=-1;
 
+    //fCANeutronPosition=new TClonesArray("TVector3",10);
+    //fCANeutronPosition->BypassStreamer();
     fNbOfDetectors =2;
     //ResetEvent();
 }
@@ -33,6 +35,7 @@ nDetAnalysisManager::~nDetAnalysisManager(){
 
     G4cout << "nDetAnalysisManager::~nDetAnalysisManager()->"  << G4endl;
 
+    delete fCANeutronPosition;
 
     //delete fTree;
      //   delete fFile;
@@ -46,6 +49,9 @@ void nDetAnalysisManager::OpenROOTFile(){
     //fFileName=fileName;
     fFile = new TFile(fFileName,"RECREATE");
     //fFile = new TFile("cona.root","RECREATE");
+
+    fCANeutronPosition=new TClonesArray("TLorentzVector",10);
+
 
     G4cout << "nDetAnalysisManager::OpenROOTFile()->" << fFileName << " has been opened." << G4endl;
 
@@ -69,12 +75,17 @@ void nDetAnalysisManager::OpenROOTFile(){
     fTree->Branch("neutronIncidentPositionX",&neutronIncidentPositionX,"neutronIncidentPositionX/D",bufsize);
     fTree->Branch("neutronIncidentPositionY",&neutronIncidentPositionY,"neutronIncidentPositionY/D",bufsize);
     fTree->Branch("neutronIncidentPositionZ",&neutronIncidentPositionZ,"neutronIncidentPositionZ/D",bufsize);
+    fTree->Branch("neutronIncidentEnergy",&neutronIncidentEnergy,"neutronIncidentEnergy/D",bufsize);
 
     fTree->Branch("depositedEnergy", &depEnergy, "depEnergy/D", bufsize);
     fTree->Branch("firstEnergy", &firstEnergy, "fEnergy/D", bufsize);
     fTree->Branch("NumberofPhotons",&fNbOfPhotons,"Ngammas/I");
     fTree->Branch("NumberofDetectedPhotons",&fNbOfDetectedPhotons,"NgammasDet/I");
 
+    fTree->Branch("NeutronPositionsCA",&fCANeutronPosition,256000,0);
+    //fCANeutronPosition->BypassStreamer();
+    fTree->Branch("vHitNumber",&fvhitNumber);
+    fTree->Branch("vTrackID",&fvTrackID);
 
     fTree->Branch("TrackLength",&fvTrackLength);
     //fTree->Branch("TrackTime",&fvTrackTime);
@@ -102,7 +113,8 @@ void nDetAnalysisManager::OpenROOTFile(){
 
     //Following branches are added by Kyle.
 //    fTree->Branch("particleCharge", &fparticleCharge);
-//    fTree->Branch("particleName", &fparticleName);
+    fTree->Branch("particleName", &fparticleName);
+    fTree->Branch("processName", &fprocessName);
 
     G4cout << "nDetAnalysisManager::OpenROOTFile()->" << fTree->GetName() << " has been created." << G4endl;
 
@@ -154,6 +166,7 @@ void nDetAnalysisManager::ResetEvent() {
     neutronIncidentPositionX=-990;
     neutronIncidentPositionY=-990;
     neutronIncidentPositionZ=-990;
+    neutronIncidentEnergy=-990;
 
     //fvPrimaryPhotonPositionX.resize(1);
     //fvPrimaryPhotonPositionY.resize(1);
@@ -168,7 +181,10 @@ void nDetAnalysisManager::ResetEvent() {
     fNbOfPhotons=0;
     fNbOfDetectedPhotons=0;
 
+
     fNbOfAbsorptions=0;
+
+    fCANeutronPosition->Clear();
 
     std::vector<double>().swap(fvPrimaryPhotonPositionX);
     std::vector<double>().swap(fvPrimaryPhotonPositionY);
@@ -188,6 +204,11 @@ void nDetAnalysisManager::ResetEvent() {
 
     std::vector<int>().swap(fvSDNumber);
     std::vector<int>().swap(fvTrackReflections);
+    std::vector<std::string>().swap(fparticleName);
+    std::vector<std::string>().swap(fprocessName);
+
+    std::vector<int>().swap(fvhitNumber);
+    std::vector<int>().swap(fvTrackID);
 
     for(G4int i=0;i<fphotons.size();i++){
 
@@ -318,12 +339,26 @@ void nDetAnalysisManager::EndOfEventAction(const G4Event *anEvent){
 
         //G4cout<<"nDetAnalysisManager::EndOfEventAction()->Nb of Hits in Scint "<<NbHits<<G4endl;
 
+        G4int neutronHits=0;
+
         for(Int_t i=0;i<NbHits;i++){
 
             G4ThreeVector pos = (*DHC_Sci)[i]->GetPos();
             G4double ptime = (*DHC_Sci)[i]->GetTime()/ns;
             G4double energy=(*DHC_Sci)[i]->GetEdep()/keV;
             G4double energy0=(*DHC_Sci)[i]->GetEdep_first()/keV;
+            G4String pname =(*DHC_Sci)[i]->GetParticleName();
+            G4String processname =(*DHC_Sci)[i]->GetProcessName();
+            G4int  trackID = (*DHC_Sci)[i]->GetTrackID();
+            if(pname == "neutron"){
+                //G4cout<<pname<<" "<<processname<<" "<<pos.x()/mm<<" "<<pos.y()/mm<<" "<<pos.z()/mm<<G4endl;
+                neutronHits++;
+                fvhitNumber.push_back(neutronHits);
+                fvTrackID.push_back(trackID);
+                new ((*fCANeutronPosition)[i]) TLorentzVector(pos.x()/mm,pos.y()/mm,pos.z()/mm,ptime);
+            }
+            fparticleName.push_back(pname);
+            fprocessName.push_back(processname);
             depEnergy+=energy;
             if(firstEnergy==0)
                 firstEnergy=energy0;
@@ -445,6 +480,8 @@ void nDetAnalysisManager::GeneratePrimaries(const G4Event *anEvent) {
     neutronIncidentPositionX=theVertex->GetX0();
     neutronIncidentPositionY=theVertex->GetY0();
     neutronIncidentPositionZ=theVertex->GetZ0();
+    neutronIncidentEnergy=theVertex->GetPrimary()->GetKineticEnergy()/MeV;
+
 
     incidentparticle=pname;
 
