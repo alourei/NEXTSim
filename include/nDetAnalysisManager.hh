@@ -16,6 +16,9 @@
 #include "G4Event.hh"
 #include "G4Track.hh"
 #include "time.h"
+#include "TVector3.h"
+#include "TLorentzVector.h"
+#include "TClonesArray.h"
 
 #include "sipmMC.hh"
 #include "PhotonList.hh"
@@ -93,6 +96,7 @@ private:
     G4double     neutronIncidentPositionX;
     G4double     neutronIncidentPositionY;
     G4double     neutronIncidentPositionZ;
+    G4double     neutronIncidentEnergy;
     G4String     incidentparticle;
 
     G4double     depEnergy; // energy deposition inside of the EJ200 scintillator
@@ -103,6 +107,11 @@ private:
     std::vector<double>     fvPrimaryPhotonPositionZ;
     std::vector<double>     fvPrimaryPhotonTime;
     std::vector<int>        fvPrimaryPhotonTrackID;
+
+    TClonesArray            *fCANeutronPosition;
+
+    std::vector<int>        fvhitNumber;
+    std::vector<int>        fvTrackID;
 
 
     std::vector<double>     fvSDPhotonPositionX;
@@ -115,6 +124,7 @@ private:
     std::vector<int>        fvSDPhotonTrackID;
 
     std::vector<std::string> fparticleName;
+    std::vector<std::string> fprocessName;
     std::vector<double>      fparticleCharge;
     std::vector<double>      fvTrackLength;
     std::vector<double>      fvTrackTime;

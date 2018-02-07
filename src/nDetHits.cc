@@ -27,6 +27,9 @@ nDetHit::nDetHit(const nDetHit &right)
   time = right.time;
   pos = right.pos;
   edep = right.edep;
+  particle = right.particle;
+  TrackID = right.TrackID;
+  processName = right.processName;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -35,6 +38,9 @@ const nDetHit& nDetHit::operator=(const nDetHit &right)
   time = right.time;
   pos = right.pos;
   edep = right.edep;
+  particle = right.particle;
+  processName = right.processName;
+  TrackID = right.TrackID;
   return *this;
 }
 
@@ -64,7 +70,9 @@ void nDetHit::Draw()
 void nDetHit::Print()
 {
 
-  G4cout << "  time: " << G4BestUnit(time,"Time")
+  G4cout << "  particle: " << GetParticleName()
+         << "  process: " << GetProcessName()
+         << "  time: " << G4BestUnit(time,"Time")
          << "  position: " << G4BestUnit(pos,"Length") << G4endl;
 
 }

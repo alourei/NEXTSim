@@ -68,10 +68,15 @@ G4bool nDetSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
             if(aStep->GetTrack()->GetDefinition() != G4OpticalPhoton::OpticalPhotonDefinition()){
               //if(aStep->GetTrack()->GetDefinition() == G4Neutron::NeutronDefinition()){
                     G4double edep=aStep->GetTotalEnergyDeposit();
+          const G4VProcess *theProcess = aStep->GetPostStepPoint()->GetProcessDefinedStep();
+          G4String processName = theProcess->GetProcessName();
 	      nDetHit* newHit = new nDetHit();
-  	      newHit->SetTime( aStep->GetPreStepPoint()->GetGlobalTime() );
-          newHit->SetPos( aStep->GetPreStepPoint()->GetPosition() );
+          newHit->SetProcessName(processName);
+          newHit->SetParticleName(aStep->GetTrack()->GetDefinition()->GetParticleName());
+  	      newHit->SetTime( aStep->GetPostStepPoint()->GetGlobalTime() );
+          newHit->SetPos( aStep->GetPostStepPoint()->GetPosition() );
           newHit->SetEdep(edep);
+          newHit->SetTrackID(aStep->GetTrack()->GetTrackID());
           //newHit->SetEdep_first(aStep->GetDeltaEnergy());
           newHit->SetEdep_first(-(aStep->GetPostStepPoint()->GetKineticEnergy()
                                   -aStep->GetPreStepPoint()->GetKineticEnergy()));

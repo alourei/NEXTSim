@@ -42,12 +42,22 @@ class nDetHit : public G4VHit
       G4double GetEdep_first() { return edep_first; };
       G4bool IsFirst() {return first;}
       void SetFirst() { first= true;}
-  private:
+      void SetParticleName(G4String name){particle=name;};
+      G4String GetParticleName(){return particle;}
+      void SetProcessName(G4String name){processName=name;};
+      G4String GetProcessName(){return processName;}
+      void SetTrackID(G4int num){TrackID = num;}
+      G4int GetTrackID(){return TrackID;}
+
+private:
       G4double time;
       G4ThreeVector pos;
       G4double edep;
       G4double edep_first;
       G4bool first=false;
+      G4String particle;
+      G4String processName;
+      G4int TrackID;
 
 };
 
