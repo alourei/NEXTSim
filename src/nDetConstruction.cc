@@ -51,9 +51,9 @@ nDetConstruction::nDetConstruction()
 
     //fGeometry="ellipse";
     //fGeometry="hexagon";
-    //fGeometry="array";
+    fGeometry="array";
     //fGeometry="rectangle";
-    fGeometry="bent";
+    //fGeometry="bent";
 
     fCheckOverlaps = false;
   fTeflonThickness = 0.11*mm;
@@ -1844,8 +1844,8 @@ void nDetConstruction::buildArray() {
 
     fCheckOverlaps =false;
 
-    //fDetectorLength = 20*cm;
-    fDetectorWidth = 10*cm;
+    fDetectorLength = 24*cm;
+    fDetectorWidth = 12*cm;
     G4double gap = 0.1*mm;
     G4double array_length = fNdetectors*2*SiPM_dimension+2*(fNdetectors-1)*gap;
 
@@ -1857,9 +1857,9 @@ void nDetConstruction::buildArray() {
     G4double wrapping_width2 = array_length+2*fTeflonThickness;
     G4double wrapping_thickness = 2*psSiPMx +2*fTeflonThickness;
 
-    //G4VSolid *theWrapping = ConstructNextModule("Wrapping",wrapping_length,wrapping_width,wrapping_width2,wrapping_thickness);
+    G4VSolid *theWrapping = ConstructNextModule("Wrapping",wrapping_length,wrapping_width,wrapping_width2,wrapping_thickness);
 
-    G4Box * theWrapping = new G4Box("Wrapping",wrapping_width2/2,wrapping_thickness/2,wrapping_length/2);
+    //G4Box * theWrapping = new G4Box("Wrapping",wrapping_width2/2,wrapping_thickness/2,wrapping_length/2);
 
     assembly_logV = new G4LogicalVolume (theWrapping,fTeflon,"theWrapping_log");
 
@@ -1867,16 +1867,17 @@ void nDetConstruction::buildArray() {
 
     G4RotationMatrix *rot=new G4RotationMatrix();
     //rot->rotateY(90*deg);
-    G4ThreeVector wrapping_position(0,0,0);
-    //For NEXT ARRAYS
-    //rot->rotateZ(90*deg);
-    //G4ThreeVector wrapping_position(0,0,wrapping_length/4);
+    //G4ThreeVector wrapping_position(0,0,0);
+    //Uncomment For NEXT ARRAYS
+    rot->rotateZ(90*deg);
+    G4ThreeVector wrapping_position(0,0,wrapping_length/4);
 
+    //Uncomment For NEXT ARRAYS
     assembly_physV= new G4PVPlacement(rot,wrapping_position,assembly_logV,"theWrapping_phys",expHall_logV,false,0,fCheckOverlaps);
 
-    //G4VSolid *TheScint = ConstructNextModule("Scint",fDetectorLength,fDetectorWidth,array_length,2*psSiPMx);
+    G4VSolid *TheScint = ConstructNextModule("Scint",fDetectorLength,fDetectorWidth,array_length,2*psSiPMx);
 
-    G4Box * TheScint = new G4Box("Wrapping",array_length/2,fDetectorThickness/2,fDetectorLength/2);
+    //G4Box * TheScint = new G4Box("Wrapping",array_length/2,fDetectorThickness/2,fDetectorLength/2);
 
 
     ej200_logV=new G4LogicalVolume(TheScint,fEJ200,"ej200_logV");
@@ -1890,21 +1891,23 @@ void nDetConstruction::buildArray() {
 
     G4VPhysicalVolume *scint_phys= new G4PVPlacement(0,scint_position,ej200_logV,"theScint_phys",assembly_logV,false,0,fCheckOverlaps);
 
-    G4AssemblyVolume *theArray_log=ConstructArray("Array",8);
+    G4AssemblyVolume *theArray_log=ConstructArray("Array");
 
-
-    //G4ThreeVector position(0,0,fDetectorLength/4+greaseY-offset/4);
-    G4ThreeVector position(0,0,fDetectorLength/2+greaseY);
+    //Uncomment for NEXT Module
+    G4ThreeVector position(0,0,fDetectorLength/4+greaseY-offset/4);
+    //Uncomment for Rectangular Array
+    //G4ThreeVector position(0,0,fDetectorLength/2+greaseY);
 
     G4RotationMatrix *rotation=new G4RotationMatrix();
     rotation->rotateX(90*deg);
 
 
-
     theArray_log->MakeImprint(assembly_logV,position,rotation,0,fCheckOverlaps);
 
-    //position.setZ(-3*fDetectorLength/4-offset/4-greaseY);
-    position.setZ(-fDetectorLength/2-greaseY);
+    //Uncomment for NEXT Module
+    position.setZ(-3*fDetectorLength/4-offset/4-greaseY);
+    //Uncomment for Rectangular Array
+    //position.setZ(-fDetectorLength/2-greaseY);
     rotation->rotateX(-180*deg);
 
     theArray_log->MakeImprint(assembly_logV,position,rotation,0,fCheckOverlaps);
@@ -1918,7 +1921,7 @@ void nDetConstruction::buildArray() {
 
 
 //G4LogicalVolume *nDetConstruction::ConstructArray(G4String name, G4int NDetectors) {
-    G4AssemblyVolume *nDetConstruction::ConstructArray(G4String name, G4int NDetectors) {
+    G4AssemblyVolume *nDetConstruction::ConstructArray(G4String name) {
 
     greaseX = SiPM_dimension;
     greaseZ = SiPM_dimension;
@@ -1931,10 +1934,9 @@ void nDetConstruction::buildArray() {
     psSiPMy = 0.09/2*mm;
     greaseY = 0.05*mm;
 
-    fNdetectors=NDetectors;
 
     G4double gap = 0.1*mm;
-    G4double BoxX = NDetectors*SiPM_dimension+2*(NDetectors-1)*gap;
+    G4double BoxX = fNdetectors*SiPM_dimension+2*(fNdetectors-1)*gap;
     G4double BoxY = (greaseY+qwSiPMy+psSiPMy);
     G4double BoxZ = SiPM_dimension+fTeflonThickness;
     G4Box *TheArrayBox=new G4Box("Array",BoxX,BoxY,BoxZ);
@@ -1976,7 +1978,7 @@ void nDetConstruction::buildArray() {
     G4AssemblyVolume *theArray = new G4AssemblyVolume();
 
     for(G4int j=0;j<fNdetectors;j++) {
-        G4ThreeVector position((-4+j)*2*(greaseX + gap)+greaseX+gap , 0, 0);
+        G4ThreeVector position((-fNdetectors/2.+j)*2*(greaseX + gap)+greaseX+gap , 0, 0);
         G4RotationMatrix *rot = new G4RotationMatrix();
         //rot->rotateZ(60 * deg);
         theArray->AddPlacedVolume(grease_logV,position,rot);

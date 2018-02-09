@@ -7,3 +7,5 @@ build/
 build_*
 ROOT_Output
 *.root
+latex/*
+html/*
