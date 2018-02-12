@@ -56,24 +56,73 @@
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
+/** \file nDetConstruction
+ *
+ */
+
+
+/** \class nDetConstruction
+ *  \brief This class defines the geometry of the detector.
+ *
+ *  Defines the geometry of the detector
+ */
+
 class nDetConstruction : public G4VUserDetectorConstruction
 {
   public:
+  /** Default constructor */
     nDetConstruction();
-   ~nDetConstruction();
+  /** Default destructor */
+    ~nDetConstruction();
 
   public:
+
+    /// Constructs the Detector
     G4VPhysicalVolume* Construct();
     G4VPhysicalVolume* ConstructDetector();
+    /// Constructs the Sensitive Detectors and Fields
     virtual void ConstructSDandField();
+    /** Sets the geometry of the detectors
+     *
+     * @param [in] geom: the geometry type (disk,hexagon, ellipse, rectangle, array, bent currently available)
+     */
     void SetGeometry(G4String geom){fGeometry=geom;}
+    /** Sets the dimensions of the SiPMs
+     *
+     * @param [in] dim: the dimensions of the Silicon photomultiplier
+     */
     void SetSiPM_dimension(G4double dim){SiPM_dimension=dim;}
-    void SetDetectorLength(G4double val){fDetectorLength=val;}
+    /** Sets the full length of the detector
+     *
+     * @param [in] length: the full length of the detector
+     */
+    void SetDetectorLength(G4double length){fDetectorLength=length;}
+    /** Sets the length of the trapezoid
+     *
+     * @param [in] length: the length of the trapezoid
+     */
     void SetTrapezoidLength(G4double val){fTrapezoidLength=val;}
-    void SetDetectorThickness(G4double val){fDetectorThickness=val;}
-    void SetMylarThickness(G4double val){fMylarThickness=val;}
-    void SetDetectorWidth(G4double val){fDetectorWidth=val;}
-    void SetHexagonRadius(G4double val){fHexagonRadius=val;}
+    /** Sets the thickness of the plastic scintillator
+     *
+     * @param [in] thickness: the thickness of the scintillator
+     */
+    void SetDetectorThickness(G4double thickness){fDetectorThickness=thickness;}
+    /** Sets the thickness of the mylar layer (0 means no mylar layer)
+     *
+     * @param [in] thickness: the thickness of the mylar
+     */
+    void SetMylarThickness(G4double thickness){fMylarThickness=thickness;}
+    /** Sets the width of the detector
+     *
+     * @param [in] width: the detector width
+     */
+    void SetDetectorWidth(G4double width){fDetectorWidth=width;}
+    /** Sets the radius of the hexagon for hexagonal geometries
+     *
+     * @param [in] radius: the radius of the hexagon
+     */
+    void SetHexagonRadius(G4double radius){fHexagonRadius=radius;}
+
     void SetDistance(G4double val){fDistance=val;}
 
     G4String GetGeometry(){return fGeometry;}
@@ -86,9 +135,9 @@ private:
 
     nDetConstructionMessenger *fDetectorMessenger;
     // data of detector structure; half of size
-    G4double expHallX;		// width
-    G4double expHallY;		// length
-    G4double expHallZ;		// thickness
+    G4double expHallX;		///< Width of the experimental hall volume
+    G4double expHallY;		///< Length of the experimental hall volume
+    G4double expHallZ;		///< Depth of the experimental hall volume
 
     G4double assemblyBoxX;
     G4double assemblyBoxY;
@@ -206,7 +255,10 @@ private:
     G4VSolid* ConstructNextModule(G4String name,G4double length,G4double width1,G4double width2,G4double thickness);
 
     //G4LogicalVolume* ConstructArray(G4String name, G4int NDetectors);
-    G4AssemblyVolume* ConstructArray(G4String name, G4int NDetectors);
+    G4AssemblyVolume* ConstructArray(G4String name);
+
+    void PlaceNEXTModule(G4RotationMatrix *theRotation,G4ThreeVector &thePosition, const G4String theName,
+                         G4LogicalVolume *theMotherLogical,G4int CopyNo);
 
     void DefineMaterials();
 

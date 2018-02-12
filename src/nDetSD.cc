@@ -5,6 +5,7 @@
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
+#include <G4SIunits.hh>
 #include "nDetSD.hh"
 #include "nDetHits.hh"
 #include "G4Step.hh"
@@ -57,12 +58,15 @@ G4bool nDetSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 
 
         if(aStep->GetStepLength()>0){
-          /* 
+
+          /*
           G4cout<<"**************** SD start ************"<< G4endl;
           G4cout<<"Process name:"<<aStep->GetPreStepPoint()->GetProcessDefinedStep()->GetProcessName()<<G4endl;
           G4String name = aStep->GetTrack()->GetVolume()->GetName();
           G4cout<<"Physical volume name:"<<name<<G4endl;
-          G4cout<<"Length of this Step: "<<aStep->GetStepLength()/mm<<" mm"<<G4endl;
+          G4cout<<"Length of this Step: "<<aStep->GetStepLength()/millimeter<<" mm"<<G4endl;
+          G4cout<<"Position"<<aStep->GetPostStepPoint()->GetPosition()<<G4endl;
+          G4cout<<"Layer"<<aStep->GetPostStepPoint()->GetTouchableHandle()->GetVolume()->GetCopyNo()<<G4endl;
           G4cout<<"**************** SD stop ************"<< G4endl;
           */
             if(aStep->GetTrack()->GetDefinition() != G4OpticalPhoton::OpticalPhotonDefinition()){
@@ -76,6 +80,7 @@ G4bool nDetSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
   	      newHit->SetTime( aStep->GetPostStepPoint()->GetGlobalTime() );
           newHit->SetPos( aStep->GetPostStepPoint()->GetPosition() );
           newHit->SetEdep(edep);
+          newHit->SetLayerNumber(aStep->GetPostStepPoint()->GetTouchableHandle()->GetReplicaNumber(1));
           newHit->SetTrackID(aStep->GetTrack()->GetTrackID());
           //newHit->SetEdep_first(aStep->GetDeltaEnergy());
           newHit->SetEdep_first(-(aStep->GetPostStepPoint()->GetKineticEnergy()

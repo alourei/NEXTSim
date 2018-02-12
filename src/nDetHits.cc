@@ -29,6 +29,7 @@ nDetHit::nDetHit(const nDetHit &right)
   edep = right.edep;
   particle = right.particle;
   TrackID = right.TrackID;
+  layerNumber = right.layerNumber;
   processName = right.processName;
 }
 
@@ -41,6 +42,7 @@ const nDetHit& nDetHit::operator=(const nDetHit &right)
   particle = right.particle;
   processName = right.processName;
   TrackID = right.TrackID;
+  layerNumber = right.layerNumber;
   return *this;
 }
 

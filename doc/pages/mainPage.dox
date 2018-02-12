@@ -1,12 +1,21 @@
 /*! \mainpage The NEXTSim Documentation
- *
- * \section intro_sec Introduction
- *
- * This is the introduction.
- *
- * \section install_sec Installation
- *
- * \subsection step1 Step 1: Opening the box
- *
- * etc...
- */
+*The neutron detector program is used to simulate and
+* optimize the performance of the scintillation detector in the
+* framework of Geant4.10.00.p01 and ROOT v5.34.14.
+* \authors
+*   * Xiaodong Zhang
+*   * Kyle Schmidt
+*   * David Perez Loureiro
+* \date September 2015
+* \version 1.0
+*
+* \section intro_sec Introduction
+*
+* This is the introduction.
+*
+* \section install_sec Installation
+*
+* \subsection step1 Step 1: Opening the box
+*
+* etc...
+*/

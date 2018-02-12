@@ -81,6 +81,7 @@ void nDetAnalysisManager::OpenROOTFile(){
     fTree->Branch("firstEnergy", &firstEnergy, "fEnergy/D", bufsize);
     fTree->Branch("NumberofPhotons",&fNbOfPhotons,"Ngammas/I");
     fTree->Branch("NumberofDetectedPhotons",&fNbOfDetectedPhotons,"NgammasDet/I");
+    fTree->Branch("LayerNumber",&fvLayerNumber);
 
     fTree->Branch("NeutronPositionsCA",&fCANeutronPosition,256000,0);
     //fCANeutronPosition->BypassStreamer();
@@ -209,7 +210,7 @@ void nDetAnalysisManager::ResetEvent() {
 
     std::vector<int>().swap(fvhitNumber);
     std::vector<int>().swap(fvTrackID);
-
+    std::vector<int>().swap(fvLayerNumber);
     for(G4int i=0;i<fphotons.size();i++){
 
         fphotons.at(i)->clear();
@@ -350,6 +351,7 @@ void nDetAnalysisManager::EndOfEventAction(const G4Event *anEvent){
             G4String pname =(*DHC_Sci)[i]->GetParticleName();
             G4String processname =(*DHC_Sci)[i]->GetProcessName();
             G4int  trackID = (*DHC_Sci)[i]->GetTrackID();
+            G4int layerNum = (*DHC_Sci)[i]->GetLayerNumber();
             if(pname == "neutron"){
                 //G4cout<<pname<<" "<<processname<<" "<<pos.x()/mm<<" "<<pos.y()/mm<<" "<<pos.z()/mm<<G4endl;
                 neutronHits++;
@@ -357,6 +359,7 @@ void nDetAnalysisManager::EndOfEventAction(const G4Event *anEvent){
                 fvTrackID.push_back(trackID);
                 new ((*fCANeutronPosition)[i]) TLorentzVector(pos.x()/mm,pos.y()/mm,pos.z()/mm,ptime);
             }
+            fvLayerNumber.push_back(layerNum);
             fparticleName.push_back(pname);
             fprocessName.push_back(processname);
             depEnergy+=energy;

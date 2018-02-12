@@ -48,6 +48,9 @@ class nDetHit : public G4VHit
       G4String GetProcessName(){return processName;}
       void SetTrackID(G4int num){TrackID = num;}
       G4int GetTrackID(){return TrackID;}
+     void SetLayerNumber(G4int num){layerNumber = num;}
+     G4int GetLayerNumber(){return layerNumber;}
+
 
 private:
       G4double time;
@@ -58,6 +61,7 @@ private:
       G4String particle;
       G4String processName;
       G4int TrackID;
+      G4int layerNumber;
 
 };
 

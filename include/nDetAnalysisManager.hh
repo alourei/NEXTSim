@@ -112,6 +112,7 @@ private:
 
     std::vector<int>        fvhitNumber;
     std::vector<int>        fvTrackID;
+    std::vector<int>        fvLayerNumber;
 
 
     std::vector<double>     fvSDPhotonPositionX;

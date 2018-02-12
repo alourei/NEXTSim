@@ -47,7 +47,8 @@ class NEXTModule {
     private:
 
     G4LogicalVolume *fWrapping_log;
-
+    G4LogicalVolume *fScint_log;
+    G4LogicalVolume *fSiPMArray_log;
 
 
 

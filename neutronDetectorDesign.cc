@@ -23,35 +23,6 @@
 // ********************************************************************
 
 
-
-
-
-/// \file neutronDetectorDesign.cc
-/// \brief Main program of the NEXTSim package
-///
-/// ********************************************************************
-// * The neutron detector program is used to simulate an	       *
-// * optimize the performance of the scintillation detector in the    *
-// * framework of Geant4.10.00.p01 and ROOT v5.34.14.                 *
-// *  by Dr. Xiaodong Zhang on Sept., 2015.                            *
-// *                                                                  *
-// ********************************************************************
-
-
-//
-// ********************************************************************
-// * The neutron detector program is used to simulate an	       *
-// * optimize the performance of the scintillation detector in the    * 
-// * framework of Geant4.10.00.p01 and ROOT v5.34.14.                 *
-// *  by Dr. Xiaodong Zhang on Sept., 2015.                            *
-// *                                                                  *
-// ********************************************************************
-//
-// log: nDet.cc,v1.0  Sept., 2015
-// --------------------------------------------------------------
-//
-
-
                                                                          
 // c/c++ headers
 
@@ -92,6 +63,14 @@
 
 #include "Randomize.hh"
 #include "time.h"
+
+
+
+/** \file neutronDetectorDesign.cc
+* \brief Main program of the NEXTSim package
+*
+*
+*/
 
 int main(int argc, char** argv)
 {
