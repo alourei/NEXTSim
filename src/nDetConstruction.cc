@@ -1867,13 +1867,12 @@ void nDetConstruction::PlaceNEXTModule(G4RotationMatrix *theRotation, G4ThreeVec
     fWrapSkinSurface = new G4LogicalSkinSurface("WrapSkin",assembly_logV,fTeflonOpticalSurface);
 
     //rot->rotateY(90*deg);
-    //G4ThreeVector wrapping_position(0,0,0);
-    //Uncomment For NEXT ARRAYS
-    //theRotation->rotateZ(90*deg);
+    G4ThreeVector wrapping_position(0,0,0);
+    //For NEXT ARRAYS
+    //rot->rotateZ(90*deg);
     //G4ThreeVector wrapping_position(0,0,wrapping_length/4);
 
-    //Uncomment For NEXT ARRAYS
-    assembly_physV= new G4PVPlacement(theRotation,thePosition,assembly_logV,"theWrapping_phys",theMotherLogical,false,CopyNo,fCheckOverlaps);
+    assembly_physV= new G4PVPlacement(rot,wrapping_position,assembly_logV,"theWrapping_phys",expHall_logV,false,0,fCheckOverlaps);
 
     G4VSolid *TheScint = ConstructNextModule("Scint",fDetectorLength,fDetectorWidth,array_length,2*psSiPMx);
 
@@ -1894,9 +1893,8 @@ void nDetConstruction::PlaceNEXTModule(G4RotationMatrix *theRotation, G4ThreeVec
 
     G4AssemblyVolume *theArray_log=ConstructArray("Array");
 
-    //Uncomment for NEXT Module
+
     //G4ThreeVector position(0,0,fDetectorLength/4+greaseY-offset/4);
-    //Uncomment for Rectangular Array
     G4ThreeVector position(0,0,fDetectorLength/2+greaseY);
 
     G4RotationMatrix *rotation=new G4RotationMatrix();
@@ -1905,9 +1903,7 @@ void nDetConstruction::PlaceNEXTModule(G4RotationMatrix *theRotation, G4ThreeVec
 
     theArray_log->MakeImprint(assembly_logV,position,rotation,0,fCheckOverlaps);
 
-    //Uncomment for NEXT Module
     //position.setZ(-3*fDetectorLength/4-offset/4-greaseY);
-    //Uncomment for Rectangular Array
     position.setZ(-fDetectorLength/2-greaseY);
     rotation->rotateX(-180*deg);
 

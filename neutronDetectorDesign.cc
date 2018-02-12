@@ -1,5 +1,9 @@
+//
 // ********************************************************************
-// * License and Disclaimer                                           *
+// * The beutron detector program is used to simulate an	       *
+// * optimize the performance of the scintillation detector in the    * 
+// * framework of Geant4.10.00.p01 and ROOT v5.34.14.                 *
+// *  by Dr. Xiaodong Zhang on Sept., 2015.                            *
 // *                                                                  *
 // * The  Geant4 software  is  copyright of the Copyright Holders  of *
 // * the Geant4 Collaboration.  It is provided  under  the terms  and *
@@ -21,8 +25,10 @@
 // * use  in  resulting  scientific  publications,  and indicate your *
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
-
-
+//
+// log: nDet.cc,v1.0  Sept., 2015
+// --------------------------------------------------------------
+//
                                                                          
 // c/c++ headers
 
