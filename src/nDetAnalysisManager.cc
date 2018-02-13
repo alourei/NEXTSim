@@ -357,11 +357,11 @@ void nDetAnalysisManager::EndOfEventAction(const G4Event *anEvent){
                 neutronHits++;
                 fvhitNumber.push_back(neutronHits);
                 fvTrackID.push_back(trackID);
+                fprocessName.push_back(processname);
                 new ((*fCANeutronPosition)[i]) TLorentzVector(pos.x()/mm,pos.y()/mm,pos.z()/mm,ptime);
             }
             fvLayerNumber.push_back(layerNum);
             fparticleName.push_back(pname);
-            fprocessName.push_back(processname);
             depEnergy+=energy;
             if(firstEnergy==0)
                 firstEnergy=energy0;

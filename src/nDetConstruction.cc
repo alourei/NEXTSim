@@ -1872,7 +1872,7 @@ void nDetConstruction::PlaceNEXTModule(G4RotationMatrix *theRotation, G4ThreeVec
     //rot->rotateZ(90*deg);
     //G4ThreeVector wrapping_position(0,0,wrapping_length/4);
 
-    assembly_physV= new G4PVPlacement(rot,wrapping_position,assembly_logV,"theWrapping_phys",expHall_logV,false,0,fCheckOverlaps);
+    assembly_physV= new G4PVPlacement(theRotation,thePosition,assembly_logV,"theWrapping_phys",expHall_logV,false,CopyNo,fCheckOverlaps);
 
     G4VSolid *TheScint = ConstructNextModule("Scint",fDetectorLength,fDetectorWidth,array_length,2*psSiPMx);
 
@@ -1889,7 +1889,7 @@ void nDetConstruction::PlaceNEXTModule(G4RotationMatrix *theRotation, G4ThreeVec
     G4ThreeVector scint_position(0,0,0);
 
     //G4VPhysicalVolume *scint_phys=
-            new G4PVPlacement(0,scint_position,ej200_logV,"theScint_phys",assembly_logV,false,0,fCheckOverlaps);
+            new G4PVPlacement(0,scint_position,ej200_logV,"theScint_phys",assembly_logV,false,CopyNo,fCheckOverlaps);
 
     G4AssemblyVolume *theArray_log=ConstructArray("Array");
 
