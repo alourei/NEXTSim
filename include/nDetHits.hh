@@ -48,14 +48,23 @@ class nDetHit : public G4VHit
       G4String GetProcessName(){return processName;}
       void SetTrackID(G4int num){TrackID = num;}
       G4int GetTrackID(){return TrackID;}
-     void SetLayerNumber(G4int num){layerNumber = num;}
-     G4int GetLayerNumber(){return layerNumber;}
+      void SetLayerNumber(G4int num){layerNumber = num;}
+      G4int GetLayerNumber(){return layerNumber;}
+      void SetMomentum(G4ThreeVector xyz) { momentum = xyz; };
+      G4ThreeVector GetMomentum() { return momentum; };
+      void SetEkin(G4double e) { ekin = e; };
+      G4double GetEkin() { return ekin; };
+
+
+
 
 
 private:
       G4double time;
       G4ThreeVector pos;
+      G4ThreeVector momentum;
       G4double edep;
+      G4double ekin;
       G4double edep_first;
       G4bool first=false;
       G4String particle;

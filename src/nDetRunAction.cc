@@ -48,7 +48,7 @@ void nDetRunAction::BeginOfRunAction(const G4Run* aRun)
   timer->Start();
 
   // open a root file.
-  openRootFile(aRun);
+  //openRootFile(aRun);
 
     if(fFile)
     G4cout << "### File " << fFile->GetName() << " opened." << G4endl;
@@ -77,7 +77,7 @@ void nDetRunAction::EndOfRunAction(const G4Run* aRun)
 
     // close the root file.
     //fFile->cd();
-  if(fFile){
+  if(fFile->IsOpen()){
 
     if (IsMaster()){
         fFile->Write();

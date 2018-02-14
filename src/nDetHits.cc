@@ -31,6 +31,8 @@ nDetHit::nDetHit(const nDetHit &right)
   TrackID = right.TrackID;
   layerNumber = right.layerNumber;
   processName = right.processName;
+  ekin = right.ekin;
+  momentum = right.momentum;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -43,6 +45,8 @@ const nDetHit& nDetHit::operator=(const nDetHit &right)
   processName = right.processName;
   TrackID = right.TrackID;
   layerNumber = right.layerNumber;
+  ekin = right.ekin;
+  momentum = right.momentum;
   return *this;
 }
 
@@ -75,7 +79,9 @@ void nDetHit::Print()
   G4cout << "  particle: " << GetParticleName()
          << "  process: " << GetProcessName()
          << "  time: " << G4BestUnit(time,"Time")
-         << "  position: " << G4BestUnit(pos,"Length") << G4endl;
+         << "  position: " << G4BestUnit(pos,"Length")
+         << "  Kinetic Energy: " << G4BestUnit(ekin,"Energy")
+         << "  momentum: " << momentum << G4endl;
 
 }
 

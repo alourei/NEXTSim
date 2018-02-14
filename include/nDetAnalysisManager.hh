@@ -109,6 +109,8 @@ private:
     std::vector<int>        fvPrimaryPhotonTrackID;
 
     TClonesArray            *fCANeutronPosition;
+    TClonesArray            *fCANeutron4Momentum;
+
 
     std::vector<int>        fvhitNumber;
     std::vector<int>        fvTrackID;

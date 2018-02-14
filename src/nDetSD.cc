@@ -77,8 +77,10 @@ G4bool nDetSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 	      nDetHit* newHit = new nDetHit();
           newHit->SetProcessName(processName);
           newHit->SetParticleName(aStep->GetTrack()->GetDefinition()->GetParticleName());
-  	      newHit->SetTime( aStep->GetPostStepPoint()->GetGlobalTime() );
-          newHit->SetPos( aStep->GetPostStepPoint()->GetPosition() );
+  	      newHit->SetTime(aStep->GetPostStepPoint()->GetGlobalTime() );
+          newHit->SetPos(aStep->GetPostStepPoint()->GetPosition());
+          newHit->SetEkin(aStep->GetPostStepPoint()->GetKineticEnergy());
+          newHit->SetMomentum(aStep->GetPostStepPoint()->GetMomentum());
           newHit->SetEdep(edep);
           newHit->SetLayerNumber(aStep->GetPostStepPoint()->GetTouchableHandle()->GetReplicaNumber(1));
           newHit->SetTrackID(aStep->GetTrack()->GetTrackID());

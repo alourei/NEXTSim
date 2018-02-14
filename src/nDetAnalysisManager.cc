@@ -51,6 +51,7 @@ void nDetAnalysisManager::OpenROOTFile(){
     //fFile = new TFile("cona.root","RECREATE");
 
     fCANeutronPosition=new TClonesArray("TLorentzVector",10);
+    fCANeutron4Momentum=new TClonesArray("TLorentzVector",10);
 
 
     G4cout << "nDetAnalysisManager::OpenROOTFile()->" << fFileName << " has been opened." << G4endl;
@@ -84,6 +85,7 @@ void nDetAnalysisManager::OpenROOTFile(){
     fTree->Branch("LayerNumber",&fvLayerNumber);
 
     fTree->Branch("NeutronPositionsCA",&fCANeutronPosition,256000,0);
+    fTree->Branch("Neutron4MomentumCA",&fCANeutron4Momentum,256000,0);
     //fCANeutronPosition->BypassStreamer();
     fTree->Branch("vHitNumber",&fvhitNumber);
     fTree->Branch("vTrackID",&fvTrackID);
@@ -186,6 +188,7 @@ void nDetAnalysisManager::ResetEvent() {
     fNbOfAbsorptions=0;
 
     fCANeutronPosition->Clear();
+    fCANeutron4Momentum->Clear();
 
     std::vector<double>().swap(fvPrimaryPhotonPositionX);
     std::vector<double>().swap(fvPrimaryPhotonPositionY);
@@ -345,6 +348,8 @@ void nDetAnalysisManager::EndOfEventAction(const G4Event *anEvent){
         for(Int_t i=0;i<NbHits;i++){
 
             G4ThreeVector pos = (*DHC_Sci)[i]->GetPos();
+            G4ThreeVector momemtum = (*DHC_Sci)[i]->GetMomentum();
+            G4double KineticEnergy = (*DHC_Sci)[i]->GetEkin();
             G4double ptime = (*DHC_Sci)[i]->GetTime()/ns;
             G4double energy=(*DHC_Sci)[i]->GetEdep()/keV;
             G4double energy0=(*DHC_Sci)[i]->GetEdep_first()/keV;
@@ -359,6 +364,7 @@ void nDetAnalysisManager::EndOfEventAction(const G4Event *anEvent){
                 fvTrackID.push_back(trackID);
                 fprocessName.push_back(processname);
                 new ((*fCANeutronPosition)[i]) TLorentzVector(pos.x()/mm,pos.y()/mm,pos.z()/mm,ptime);
+                new ((*fCANeutron4Momentum)[i]) TLorentzVector(momemtum.x(),momemtum.y(),momemtum.z(),KineticEnergy/keV);
             }
             fvLayerNumber.push_back(layerNum);
             fparticleName.push_back(pname);
