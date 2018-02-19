@@ -54,6 +54,8 @@ class nDetHit : public G4VHit
       G4ThreeVector GetMomentum() { return momentum; };
       void SetEkin(G4double e) { ekin = e; };
       G4double GetEkin() { return ekin; };
+      void SetScatteringAngle(G4double angle) { scatteringAngle = angle; };
+      G4double GetScatteringAngle() { return scatteringAngle; };
 
 
 
@@ -63,9 +65,10 @@ private:
       G4double time;
       G4ThreeVector pos;
       G4ThreeVector momentum;
-      G4double edep;
-      G4double ekin;
+      G4double edep=0;
+      G4double ekin=0;
       G4double edep_first;
+      G4double scatteringAngle;
       G4bool first=false;
       G4String particle;
       G4String processName;

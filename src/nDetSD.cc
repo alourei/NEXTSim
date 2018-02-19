@@ -74,6 +74,12 @@ G4bool nDetSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
                     G4double edep=aStep->GetTotalEnergyDeposit();
           const G4VProcess *theProcess = aStep->GetPostStepPoint()->GetProcessDefinedStep();
           G4String processName = theProcess->GetProcessName();
+          G4double theta=0;
+                if(processName == "hadElastic"){
+           G4ThreeVector Initialmomentum = aStep->GetPreStepPoint()->GetMomentum();
+           G4ThreeVector FinalMomentum = aStep->GetPostStepPoint()->GetMomentum();
+           theta = FinalMomentum.angle(Initialmomentum);
+          }
 	      nDetHit* newHit = new nDetHit();
           newHit->SetProcessName(processName);
           newHit->SetParticleName(aStep->GetTrack()->GetDefinition()->GetParticleName());
@@ -82,6 +88,7 @@ G4bool nDetSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
           newHit->SetEkin(aStep->GetPostStepPoint()->GetKineticEnergy());
           newHit->SetMomentum(aStep->GetPostStepPoint()->GetMomentum());
           newHit->SetEdep(edep);
+          newHit->SetScatteringAngle(theta);
           newHit->SetLayerNumber(aStep->GetPostStepPoint()->GetTouchableHandle()->GetReplicaNumber(1));
           newHit->SetTrackID(aStep->GetTrack()->GetTrackID());
           //newHit->SetEdep_first(aStep->GetDeltaEnergy());

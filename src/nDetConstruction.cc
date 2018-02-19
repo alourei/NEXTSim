@@ -1049,6 +1049,7 @@ void nDetConstruction::DefineMaterials() {
     fTeflonOpticalSurface->SetFinish(ground);
 
     //fTeflonOpticalSurface->SetType(dielectric_metal);
+    //TODO Uncommment
     fTeflonOpticalSurface->SetType(dielectric_dielectric);
 
     fTeflonOpticalSurface->SetMaterialPropertiesTable(fTeflonMPT);

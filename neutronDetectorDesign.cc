@@ -125,14 +125,15 @@ that didn't work... this is horribly deprecated*/
 //Using "high precision" neutron scattering model.  Warning: this will be slow.
 
 
-  //nDetPhysicsList* physics = (nDetPhysicsList*)new QGSP_BERT_HP();
-    //nDetPhysicsList* physics = new nDetPhysicsList();
-  G4VModularPhysicsList* physics = new QGSP_BERT_HP();
+    nDetPhysicsList* physics = new nDetPhysicsList();
 
+/*
   G4OpticalPhysics *theOpticalPhysics=new G4OpticalPhysics();
   theOpticalPhysics->SetScintillationByParticleType(true);
   theOpticalPhysics->SetFiniteRiseTime(false);
-  physics->ReplacePhysics(theOpticalPhysics);
+*/
+  //Uncomment to ADD photons
+  //physics->ReplacePhysics(theOpticalPhysics);
   runManager->SetUserInitialization( physics );
 
 #ifdef G4VIS_USE

@@ -112,6 +112,7 @@ void nDetAnalysisManager::OpenROOTFile(){
     fTree->Branch("NofReflections",&fvTrackReflections);
 
     fTree->Branch("NofAbsorptions",&fNbOfAbsorptions,"NAbs/I");
+    fTree->Branch("vScatteringAngle",&fvScatteringAngle);
 
 
     //Following branches are added by Kyle.
@@ -204,6 +205,7 @@ void nDetAnalysisManager::ResetEvent() {
     std::vector<double>().swap(fvSDPhotonWavelength);
     std::vector<double>().swap(fvTrackLength);
     std::vector<double>().swap(fvTrackTime);
+    std::vector<double>().swap(fvScatteringAngle);
     std::vector<int>().swap(fvSDPhotonTrackID);
 
     std::vector<int>().swap(fvSDNumber);
@@ -357,16 +359,19 @@ void nDetAnalysisManager::EndOfEventAction(const G4Event *anEvent){
             G4String processname =(*DHC_Sci)[i]->GetProcessName();
             G4int  trackID = (*DHC_Sci)[i]->GetTrackID();
             G4int layerNum = (*DHC_Sci)[i]->GetLayerNumber();
+            G4double theta = (*DHC_Sci)[i]->GetScatteringAngle();
             if(pname == "neutron"){
                 //G4cout<<pname<<" "<<processname<<" "<<pos.x()/mm<<" "<<pos.y()/mm<<" "<<pos.z()/mm<<G4endl;
                 neutronHits++;
                 fvhitNumber.push_back(neutronHits);
                 fvTrackID.push_back(trackID);
                 fprocessName.push_back(processname);
+                fvScatteringAngle.push_back(theta);
+                fvLayerNumber.push_back(layerNum);
                 new ((*fCANeutronPosition)[i]) TLorentzVector(pos.x()/mm,pos.y()/mm,pos.z()/mm,ptime);
                 new ((*fCANeutron4Momentum)[i]) TLorentzVector(momemtum.x(),momemtum.y(),momemtum.z(),KineticEnergy/keV);
             }
-            fvLayerNumber.push_back(layerNum);
+
             fparticleName.push_back(pname);
             depEnergy+=energy;
             if(firstEnergy==0)
@@ -434,11 +439,11 @@ void nDetAnalysisManager::EndOfEventAction(const G4Event *anEvent){
        }
 
     }
-    else{
+    else {
         //G4cout << "nDetAnalysisManager::EndOfEventAction()->No Hits in SiPM !"<< G4endl;
 
     }
-    if(fNbOfPhotons>0)
+    if(fNbOfPhotons>0||depEnergy>0)
     FillTree();
     ResetEvent();
 

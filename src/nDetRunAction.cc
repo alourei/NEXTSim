@@ -77,7 +77,7 @@ void nDetRunAction::EndOfRunAction(const G4Run* aRun)
 
     // close the root file.
     //fFile->cd();
-  if(fFile->IsOpen()){
+  if(fFile){
 
     if (IsMaster()){
         fFile->Write();
@@ -85,8 +85,8 @@ void nDetRunAction::EndOfRunAction(const G4Run* aRun)
         G4cout << "*** " << fileName << " is created." << G4endl;
     }
   }
-  else
-    G4cout << "*** No output file created." << G4endl;
+  //else
+    //G4cout << "*** No output file created." << G4endl;
 
 }
 

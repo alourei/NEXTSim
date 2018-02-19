@@ -5,6 +5,7 @@
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
+#include <G4SIunits.hh>
 #include "nDetHits.hh"
 #include "G4VVisManager.hh"
 #include "G4Circle.hh"
@@ -33,6 +34,7 @@ nDetHit::nDetHit(const nDetHit &right)
   processName = right.processName;
   ekin = right.ekin;
   momentum = right.momentum;
+  scatteringAngle = right.scatteringAngle;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -47,6 +49,7 @@ const nDetHit& nDetHit::operator=(const nDetHit &right)
   layerNumber = right.layerNumber;
   ekin = right.ekin;
   momentum = right.momentum;
+  scatteringAngle = right.scatteringAngle;
   return *this;
 }
 
@@ -81,7 +84,8 @@ void nDetHit::Print()
          << "  time: " << G4BestUnit(time,"Time")
          << "  position: " << G4BestUnit(pos,"Length")
          << "  Kinetic Energy: " << G4BestUnit(ekin,"Energy")
-         << "  momentum: " << momentum << G4endl;
+         << "  momentum: " << momentum
+         << "  Scattering Angle: " << scatteringAngle/degree << G4endl;
 
 }
 

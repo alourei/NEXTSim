@@ -84,7 +84,7 @@ private:
     G4int fScintCollectionID;
     G4int fSiPMCollectionID;
 
-    G4int  fNbOfPhotons;
+    G4int  fNbOfPhotons=0;
     G4int  fNbOfDetectedPhotons;
     G4int  fNbOfDetectors;
 
@@ -99,7 +99,7 @@ private:
     G4double     neutronIncidentEnergy;
     G4String     incidentparticle;
 
-    G4double     depEnergy; // energy deposition inside of the EJ200 scintillator
+    G4double     depEnergy=0; // energy deposition inside of the EJ200 scintillator
     G4double     firstEnergy;
 
     std::vector<double>     fvPrimaryPhotonPositionX;
@@ -115,6 +115,7 @@ private:
     std::vector<int>        fvhitNumber;
     std::vector<int>        fvTrackID;
     std::vector<int>        fvLayerNumber;
+    std::vector<double>     fvScatteringAngle;
 
 
     std::vector<double>     fvSDPhotonPositionX;
