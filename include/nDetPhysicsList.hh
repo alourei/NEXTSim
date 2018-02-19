@@ -66,6 +66,9 @@ public:
      */
     void EnableScintByPID(G4bool value = true){useScintillationByPID = value;}
 
+    void AddOpticalPhysics();
+
+
 private:
     nDetPhysicsMessenger *fPhysicsMessenger; ///< Pointer to the Physics Messenger
     G4bool useOpticalPhotons;                ///< Flag for Optical Photons

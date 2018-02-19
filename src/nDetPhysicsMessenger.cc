@@ -42,6 +42,7 @@ void nDetPhysicsMessenger::SetNewValue(G4UIcommand* command,G4String newValue){
 if(command == fUseOpticalCmd){
 G4bool value = fUseOpticalCmd->GetNewBoolValue(newValue);
 fPhysicsList->EnableOptical(value);
+fPhysicsList->AddOpticalPhysics();
 }
 if(command == fUseScintbyPIDCmd){
 G4bool value = fUseOpticalCmd->GetNewBoolValue(newValue);

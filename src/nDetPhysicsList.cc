@@ -15,8 +15,18 @@ nDetPhysicsList::nDetPhysicsList() :QGSP_BERT_HP() {
 
     fPhysicsMessenger = new nDetPhysicsMessenger(this);
 
-    useOpticalPhotons = true;
+    useOpticalPhotons = false;
     useScintillationByPID = true;
+
+}
+
+nDetPhysicsList::~nDetPhysicsList() {
+    delete fPhysicsMessenger;
+}
+
+
+
+void nDetPhysicsList::AddOpticalPhysics() {
 
     if(useOpticalPhotons) {
 
@@ -24,10 +34,6 @@ nDetPhysicsList::nDetPhysicsList() :QGSP_BERT_HP() {
         RegisterPhysics(theOpticalPhysics);
         theOpticalPhysics->SetScintillationByParticleType(useScintillationByPID);
     }
-}
-
-nDetPhysicsList::~nDetPhysicsList() {
-    delete fPhysicsMessenger;
 }
 
 void nDetPhysicsList::SetCuts() {

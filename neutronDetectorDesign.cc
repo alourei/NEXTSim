@@ -174,7 +174,9 @@ that didn't work... this is horribly deprecated*/
 //end of Kyle's changes
 
   // Initialize G4 kernel
-  runManager->Initialize();
+  // Make it manually to allow the definition of
+  // commands in PreInit state (for instance to define the PhysicsList)
+  //runManager->Initialize();
   
   // get the pointer to the UI manager and set verbosities
   G4UImanager *UImanager = G4UImanager::GetUIpointer();
