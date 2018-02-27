@@ -1,7 +1,7 @@
 NEXTsim
 ========
 
-NEXTsim is a Geant4/ROOT based software devoted to simulate and optimize the performance of the NEXT neutron detector
+NEXTsim is a [Geant4](https://geant4.web.cern.ch/geant4/)/[ROOT](https://root.cern.ch/)based software devoted to simulate and optimize the performance of the NEXT neutron detector
 
 
 Authors
@@ -21,13 +21,13 @@ Features
 Installation
 ------------
 
-###Getting the source
+### Getting the source
 
     $git clone https://github.com/alourei/NEXTSim
     
 will clone the GitHub repository to your computer and will create the  NEXTSim folder
 
-###Compiling
+### Compiling
  Create the build directory and change to it
     
     $mkdir NEXTSim-build
