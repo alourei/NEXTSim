@@ -9,3 +9,4 @@ ROOT_Output
 *.root
 doc/latex/*
 doc/html/*
+include/old/*

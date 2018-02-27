@@ -19,7 +19,7 @@ nDetPhysicsMessenger::nDetPhysicsMessenger(nDetPhysicsList *thePhysicsList):
     fUseOpticalCmd = new G4UIcmdWithABool("/nDet/phys/EnableOpticalPhotons",this);
     fUseOpticalCmd->SetGuidance("Enables/Disables the Optical Photon Emission in the scintillator Material");
     fUseOpticalCmd->SetDefaultValue("true");
-    //fUseOpticalCmd->AvailableForStates(G4State_PreInit);
+    fUseOpticalCmd->AvailableForStates(G4State_PreInit);
 
     fUseScintbyPIDCmd =new G4UIcmdWithABool("/nDet/phys/EnableScintillationByParticleType",this);
     fUseScintbyPIDCmd->SetGuidance("Enables/Disables different scintillation by Particle type");

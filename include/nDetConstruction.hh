@@ -122,12 +122,24 @@ class nDetConstruction : public G4VUserDetectorConstruction
      * @param [in] radius: the radius of the hexagon
      */
     void SetHexagonRadius(G4double radius){fHexagonRadius=radius;}
-
-    void SetDistance(G4double val){fDistance=val;}
-
+    /** Sets the distance  between the source and the detector for the calculation of the angle for bent geometry
+     *
+     * @param [in] distance: the distance
+     */
+    void SetDistance(G4double distance){fDistance=distance;}
+    /** Returns the Geometry time
+     *
+     * @return the String with the geometry type
+     */
     G4String GetGeometry(){return fGeometry;}
+    /** Returns the distance between the detector and the source for bent geometry
+     *
+     * @return
+     */
     G4double GetDistance(){return fDistance;}
-
+    /** Updates the geometry after setting new geometry parameters
+     *
+     */
     void UpdateGeometry();
 
 
