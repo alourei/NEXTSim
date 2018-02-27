@@ -1,41 +1,58 @@
-NEXTsIM
+NEXTsim
 ========
 
-$project will solve your problem of where to start with documentation,
-by providing a basic explanation of how to do it easily.
+NEXTsim is a Geant4/ROOT based software devoted to simulate and optimize the performance of the NEXT neutron detector
 
-Look how easy it is to use:
 
-    import project
-    # Get your stuff done
-    project.do_stuff()
+Authors
+-------
+
+- Xiadong Zhang
+- Kyle Schmitt
+- David Perez Loureiro 
 
 Features
 --------
 
-- Be awesome
-- Make things faster
+- Realistic simulation of scintillation detectors
+- Diferent geometries available
+- SiPM readout
 
 Installation
 ------------
 
-Install $project by running:
+###Getting the source
 
-    install project
+    $git clone https://github.com/alourei/NEXTSim
+    
+will clone the GitHub repository to your computer and will create the  NEXTSim folder
+
+###Compiling
+ Create the build directory and change to it
+    
+    $mkdir NEXTSim-build
+    $cd NEXTSim-build
+   
+Generate the Makefile using cMake
+
+    $cmake -DGeant4_DIR </pathToGeant4Instalation/lib/Geant<version>> </pathToNEXTsimSource>
+
+Compile the code
+
+    $make
 
 Contribute
 ----------
 
-- Issue Tracker: github.com/$project/$project/issues
-- Source Code: github.com/$project/$project
+- Issue Tracker: https://github.com/alourei/NEXTSim/issues
+- Source Code: https://github.com/alourei/NEXTSim
 
 Support
 -------
 
 If you are having issues, please let us know.
-We have a mailing list located at: project@google-groups.com
 
 License
 -------
 
-The project is licensed under the BSD license.
+NEXTsim is distributed under the terms of the GNU Lesser General Public Licence version 3 (LGPL)
