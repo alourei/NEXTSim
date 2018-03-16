@@ -9,7 +9,7 @@ Authors
 
 - Xiadong Zhang
 - Kyle Schmitt
-- David Perez Loureiro 
+- David P&eacute;rez Loureiro 
 
 Features
 --------
