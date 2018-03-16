@@ -29,7 +29,7 @@ nDetPhysicsList::~nDetPhysicsList() {
 void nDetPhysicsList::AddOpticalPhysics() {
 
     if(useOpticalPhotons) {
-
+        G4cout<<"nDetPhysicsList::AddOpticalPhysics()->Enabled "<<G4endl;
         G4OpticalPhysics *theOpticalPhysics= new G4OpticalPhysics;
         RegisterPhysics(theOpticalPhysics);
         theOpticalPhysics->SetScintillationByParticleType(useScintillationByPID);

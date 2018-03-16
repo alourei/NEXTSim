@@ -71,6 +71,8 @@ void SiPMHit::Print()
            << "  local time: " << G4BestUnit(local_time,"Time")
            << "  position: " << G4BestUnit(pos,"Length") << G4endl
            << "  wavelength: " << G4BestUnit(Wavelength,"Length") << G4endl
-           << "  detector number: " << GetSiPMNumber() << G4endl;
+            << "  detector name: " << GetDetectorName() << G4endl
+            << "  detector number: " << GetSiPMNumber() << G4endl
+           << "  module number: " << GetModuleNumber() << G4endl;
 
 }

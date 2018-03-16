@@ -26,6 +26,13 @@
 
 #include "SiPMHits.hh"
 
+#include "OptPhotonHit.hh"
+#include "ScintHit.hh"
+
+
+class OptPhotonHit;
+class ScintHit;
+
 
 class nDetAnalysisManager:public G4RootAnalysisManager {
 
@@ -67,6 +74,9 @@ class nDetAnalysisManager:public G4RootAnalysisManager {
     void InitGossip();
 
     void ProcessGossip( const SiPMHitsCollection *DHC_SiPM);
+
+    void FillOptPhotonHits( const G4Event *anEvent);
+    void FillScintHits(const G4Event *anEvent);
 
 private:
 
@@ -110,6 +120,11 @@ private:
 
     TClonesArray            *fCANeutronPosition;
     TClonesArray            *fCANeutron4Momentum;
+
+
+    TClonesArray            *fCAOptPhotonHits;
+
+    TClonesArray            *fCAScintHits;
 
 
     std::vector<int>        fvhitNumber;

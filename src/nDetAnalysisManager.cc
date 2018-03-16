@@ -14,6 +14,8 @@
 #include "nDetUserTrackingInformation.hh"
 #include "nDetUserEventInformation.hh"
 #include "TSystem.h"
+
+
 nDetAnalysisManager::nDetAnalysisManager(){
 
     G4cout << "nDetAnalysisManager::nDetAnalysisManager()->"<<this<< G4endl;
@@ -52,6 +54,10 @@ void nDetAnalysisManager::OpenROOTFile(){
 
     fCANeutronPosition=new TClonesArray("TLorentzVector",10);
     fCANeutron4Momentum=new TClonesArray("TLorentzVector",10);
+
+    fCAOptPhotonHits = new TClonesArray("OptPhotonHit",20);
+
+    fCAScintHits = new TClonesArray("ScintHit",10);
 
 
     G4cout << "nDetAnalysisManager::OpenROOTFile()->" << fFileName << " has been opened." << G4endl;
@@ -119,6 +125,12 @@ void nDetAnalysisManager::OpenROOTFile(){
 //    fTree->Branch("particleCharge", &fparticleCharge);
     fTree->Branch("particleName", &fparticleName);
     fTree->Branch("processName", &fprocessName);
+
+
+    Int_t splitlevel=0;
+
+    fTree->Branch("OptPhotonHitsCA",&fCAOptPhotonHits,256000,splitlevel);
+    fTree->Branch("ScintHitsCA",&fCAScintHits,256000,splitlevel);
 
     G4cout << "nDetAnalysisManager::OpenROOTFile()->" << fTree->GetName() << " has been created." << G4endl;
 
@@ -190,6 +202,9 @@ void nDetAnalysisManager::ResetEvent() {
 
     fCANeutronPosition->Clear();
     fCANeutron4Momentum->Clear();
+
+    fCAOptPhotonHits->Clear();
+    fCAScintHits->Clear();
 
     std::vector<double>().swap(fvPrimaryPhotonPositionX);
     std::vector<double>().swap(fvPrimaryPhotonPositionY);
@@ -443,6 +458,11 @@ void nDetAnalysisManager::EndOfEventAction(const G4Event *anEvent){
         //G4cout << "nDetAnalysisManager::EndOfEventAction()->No Hits in SiPM !"<< G4endl;
 
     }
+
+    FillOptPhotonHits(anEvent);
+
+    FillScintHits(anEvent);
+
     if(fNbOfPhotons>0||depEnergy>0)
     FillTree();
     ResetEvent();
@@ -557,3 +577,112 @@ void nDetAnalysisManager::OnceAWhileDoIt(const G4bool DoItNow) {
 
 }
 
+
+
+void nDetAnalysisManager::FillOptPhotonHits(const G4Event *anEvent) {
+
+    //First to get the Hits Collection fo the Event
+
+    //G4cout<<"nDetAnalysisManager::FillOptPhotonHits()->Filling Hits.."<<G4endl;
+
+    G4HCofThisEvent *theHCE=anEvent->GetHCofThisEvent();
+
+    SiPMHitsCollection *DHC_SiPM=0;
+
+    //We check if there are SiPM hits in the Event
+    if(theHCE)
+        if(fSiPMCollectionID>=0)
+        DHC_SiPM=(SiPMHitsCollection*)(theHCE->GetHC(fSiPMCollectionID));
+
+    if(DHC_SiPM){
+
+        G4int NbOfHits=DHC_SiPM->entries();
+
+        for(G4int i=0; i< NbOfHits;i++){
+
+        //We create an OptPhotonHit for each Geant4 hit
+
+        OptPhotonHit *theHit=new OptPhotonHit();
+
+        G4ThreeVector pos =(*DHC_SiPM)[i]->GetPos();
+        G4double ptime = (*DHC_SiPM)[i]->GetTime() / ns;
+        G4double localtime = (*DHC_SiPM)[i]->GetLocalTime() / ns;
+        G4int detector=(*DHC_SiPM)[i]->GetSiPMNumber();
+        G4int trackID=(*DHC_SiPM)[i]->GetTrackID();
+        G4double wavelength=(*DHC_SiPM)[i]->GetWaveLength();
+        G4double moduleNumber=(*DHC_SiPM)[i]->GetModuleNumber();
+        G4String detectorName=(*DHC_SiPM)[i]->GetDetectorName();
+
+        theHit->SetPosition(TVector3(pos.x(),pos.y(),pos.z()));
+        theHit->SetTime(ptime);
+        theHit->SetLocalTime(localtime);
+        theHit->SetDetectorID(detector);
+        theHit->SetModuleNumber(moduleNumber);
+        theHit->SetDetectorName(detectorName);
+
+        new((*fCAOptPhotonHits)[i])OptPhotonHit(*theHit);
+
+        delete theHit;
+
+        }
+    }
+}
+
+
+
+void nDetAnalysisManager::FillScintHits(const G4Event *anEvent) {
+
+    //First to get the Hits Collection fo the Event
+
+    //G4cout<<"nDetAnalysisManager::FillScintHits()->Filling Hits..."<<G4endl;
+
+    G4HCofThisEvent *theHCE = anEvent->GetHCofThisEvent();
+
+    nDetHitsCollection *DHC_Sci=0;
+
+    if(theHCE)
+        if(fScintCollectionID>=0)
+            DHC_Sci = (nDetHitsCollection*)(theHCE->GetHC(fScintCollectionID));
+
+    if(DHC_Sci){
+
+        G4int NbOfHits = DHC_Sci->entries();
+
+        //G4cout<<"nDetAnalysisManager::FillScintHits()->NbOfHits: "<<NbOfHits<<G4endl;
+
+
+        for(G4int i=0;i<NbOfHits;i++){
+
+            //We create a ScintHit for each Geant4 hit
+
+            ScintHit *theHit=new ScintHit();
+
+            G4ThreeVector pos=(*DHC_Sci)[i]->GetPos();
+            G4double time=(*DHC_Sci)[i]->GetTime();
+            G4ThreeVector momentum=(*DHC_Sci)[i]->GetMomentum();
+            G4double energy=(*DHC_Sci)[i]->GetEkin();
+            G4int layerNo=(*DHC_Sci)[i]->GetLayerNumber();
+            G4int trackID=(*DHC_Sci)[i]->GetTrackID();
+            G4double deltaE=(*DHC_Sci)[i]->GetEdep_first();
+            G4double depositedEnergy=(*DHC_Sci)[i]->GetEdep();
+            G4String processName=(*DHC_Sci)[i]->GetProcessName();
+            G4String particleName=(*DHC_Sci)[i]->GetParticleName();
+
+            theHit->SetPosition(TLorentzVector(pos.x(),pos.y(),pos.z(),time));
+            theHit->SetMomentum(TLorentzVector(momentum.x(),momentum.y(),momentum.z(),energy));
+            theHit->SetHitNo(i+1);
+            theHit->SetLayerNo(layerNo);
+            theHit->SetTrackID(trackID);
+            theHit->SetDeltaE(deltaE*1000);
+            theHit->SetDepositedEnergy(depositedEnergy*1000);
+            theHit->SetProcessName(processName);
+            theHit->SetParticleName(particleName);
+
+            new((*fCAScintHits)[i])ScintHit(*theHit);
+
+            delete theHit;
+
+        }
+    }
+
+}

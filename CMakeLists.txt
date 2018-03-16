@@ -1,7 +1,9 @@
       # (1)
       cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
 
-      project(NextMultipleScattering)
+      project(NextSim)
+
+      set(CMAKE_MACOSX_RPATH 1)
 
       # (2)
       option(WITH_GEANT4_UIVIS "Build example with Geant4 UI and Vis drivers" ON)
@@ -12,6 +14,7 @@
       endif()
 
       set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/cmake/modules/)
+
       find_package(ROOT REQUIRED)
       set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
       
@@ -21,13 +24,20 @@
       include_directories(${ROOT_INCLUDE_DIR})
       message(status ${ROOT_INCLUDE_DIR})
 
+
      # (4)      
       file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cc)
       file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh)
 
+      ROOT_GENERATE_DICTIONARY(NEXTSimDict OptPhotonHit.hh ScintHit.hh LINKDEF)
+
+      add_library(NEXTSim SHARED ${PROJECT_SOURCE_DIR}/src/OptPhotonHit.cc ${PROJECT_SOURCE_DIR}/src/ScintHit.cc  NEXTSimDict.cxx)
+      target_link_libraries(NEXTSim ${ROOT_LIBRARIES})
+
+
       # (5)
       add_executable(neutronDetectorDesign neutronDetectorDesign.cc ${sources} )
-      target_link_libraries(neutronDetectorDesign ${Geant4_LIBRARIES} ${ROOT_LIBRARIES})
+      target_link_libraries(neutronDetectorDesign ${Geant4_LIBRARIES} ${ROOT_LIBRARIES} NEXTSim)
 
       # (6)
 

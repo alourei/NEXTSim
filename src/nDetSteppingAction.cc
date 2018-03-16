@@ -57,6 +57,25 @@ void nDetSteppingAction::UserSteppingAction(const G4Step* aStep)
   // used for debug...
   //G4cout<<aStep->GetTrack()->GetVolume()->GetName()<<G4endl;
 
+
+  //Print the Secondaries information
+    const std::vector<const G4Track *> *theSecondaries=aStep->GetSecondaryInCurrentStep();
+
+    G4int size=theSecondaries->size();
+
+/*
+    for (G4int i=0;i<size;i++) {
+
+        G4Track *theTrack = (G4Track *) (theSecondaries)->at(i);
+
+        if (theTrack->GetParentID() == 2) {
+
+            G4cout << "Secondary created " << theTrack->GetDefinition()->GetParticleName() << G4endl
+                   << "Process Name " << theTrack->GetCreatorProcess()->GetProcessName() << G4endl;
+        }
+    }
+*/
+
   G4String name = aStep->GetTrack()->GetMaterial()->GetName();
 
     if (aStep->GetTrack()->GetDefinition() == G4OpticalPhoton::OpticalPhotonDefinition() && name == "G4_AIR") {
@@ -113,7 +132,7 @@ void nDetSteppingAction::UserSteppingAction(const G4Step* aStep)
 
               switch (boundaryStatus) {
                   case Detection: {
-                      //Triger sensitive detector manually since photon is
+                      //Trigger sensitive detector manually since photon is
                       //absorbed but status was Detection
                       G4SDManager *SDman = G4SDManager::GetSDMpointer();
                       G4String sdName = "/theSiPMSD";
@@ -122,7 +141,7 @@ void nDetSteppingAction::UserSteppingAction(const G4Step* aStep)
                           sipmSD->ProcessHits_constStep(aStep, NULL);
                       G4String vName = aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName();
                       G4double time = aStep->GetPostStepPoint()->GetGlobalTime();
-                      //G4cout<<"Detect one photon in SiPM"<< vName<<" Global time: "<<time<<" at the position of "<<aStep->GetPostStepPoint()->GetPosition().y()<<G4endl;
+                      //G4cout<<"Detect one photon in SiPM"<< vName<<" Global time: "<<time<<" at the position of "<<aStep->GetPostStepPoint()->GetPosition().x()<<G4endl;
                       //G4cout<<"Detection in "<<vName<<G4endl;
                       theTrackingInfo->IncDetections();
                       theEventInfo->IncDetections();

@@ -59,7 +59,7 @@ G4bool nDetSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 
         if(aStep->GetStepLength()>0){
 
-          /*
+         /*
           G4cout<<"**************** SD start ************"<< G4endl;
           G4cout<<"Process name:"<<aStep->GetPreStepPoint()->GetProcessDefinedStep()->GetProcessName()<<G4endl;
           G4String name = aStep->GetTrack()->GetVolume()->GetName();
@@ -68,7 +68,7 @@ G4bool nDetSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
           G4cout<<"Position"<<aStep->GetPostStepPoint()->GetPosition()<<G4endl;
           G4cout<<"Layer"<<aStep->GetPostStepPoint()->GetTouchableHandle()->GetVolume()->GetCopyNo()<<G4endl;
           G4cout<<"**************** SD stop ************"<< G4endl;
-          */
+         */
             if(aStep->GetTrack()->GetDefinition() != G4OpticalPhoton::OpticalPhotonDefinition()){
               //if(aStep->GetTrack()->GetDefinition() == G4Neutron::NeutronDefinition()){
                     G4double edep=aStep->GetTotalEnergyDeposit();
@@ -89,7 +89,7 @@ G4bool nDetSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
           newHit->SetMomentum(aStep->GetPostStepPoint()->GetMomentum());
           newHit->SetEdep(edep);
           newHit->SetScatteringAngle(theta);
-          newHit->SetLayerNumber(aStep->GetPostStepPoint()->GetTouchableHandle()->GetReplicaNumber(1));
+          newHit->SetLayerNumber(aStep->GetPostStepPoint()->GetTouchableHandle()->GetVolume()->GetCopyNo());
           newHit->SetTrackID(aStep->GetTrack()->GetTrackID());
           //newHit->SetEdep_first(aStep->GetDeltaEnergy());
           newHit->SetEdep_first(-(aStep->GetPostStepPoint()->GetKineticEnergy()

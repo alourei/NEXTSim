@@ -41,6 +41,11 @@ public:
     G4int GetTrackID() { return TrackID; }
     void SetWaveLength(G4double length) { Wavelength = length; }
     G4double GetWaveLength() { return Wavelength; }
+    void SetModuleNumber(G4int aModuleNumber) { ModuleNumber = aModuleNumber; }
+    G4double GetModuleNumber() { return ModuleNumber; }
+    G4String GetDetectorName(){ return DetectorName;}
+    void SetDetectorName(G4String aName){DetectorName= aName;}
+
 
 private:
     G4double time;
@@ -50,6 +55,8 @@ private:
     G4double Wavelength;
     G4int EventID;
     G4int TrackID;
+    G4int ModuleNumber;
+    G4String DetectorName;
 
 };
 

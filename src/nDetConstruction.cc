@@ -863,7 +863,7 @@ void nDetConstruction::DefineMaterials() {
     G4double photonEnergy_teflon[nEntries_Teflon] = {2.*eV, 3.47*eV};
     G4double refl_teflon[nEntries_Teflon] = {0.99, 0.99};
     //G4double refl_teflon[nEntries_Teflon] = {0.5, 0.5};
-    G4double effi_teflon[nEntries_Teflon] = {0, 0};
+    G4double effi_teflon[nEntries_Teflon] = {0., 0.};
     G4double Absorption_Teflon[nEntries_Teflon] =  { 0.333 * cm ,0.333 * cm  };
     G4double refractiveIndex_teflon[nEntries_Teflon] = {1.315, 1.315};
     fTeflonMPT->AddProperty("REFLECTIVITY", photonEnergy_teflon, refl_teflon, nEntries_Teflon);
@@ -871,6 +871,7 @@ void nDetConstruction::DefineMaterials() {
     fTeflonMPT->AddProperty("RINDEX", photonEnergy_teflon,refractiveIndex_teflon,nEntries_Teflon);
     fTeflonMPT->AddProperty("ABSLENGTH", photonEnergy_teflon,Absorption_Teflon,nEntries_Teflon);
 
+    G4cout<<"Teflon Material Properties Table"<<G4endl;
     fTeflonMPT->DumpTable();
 
     fTeflon->SetMaterialPropertiesTable(fTeflonMPT);
@@ -897,10 +898,13 @@ void nDetConstruction::DefineMaterials() {
     G4double Absorption_EJ200[nEntries_EJ200] =  { 400*cm, 400*cm, 400*cm, 400*cm, 400*cm };
     G4double ScintilFast_EJ200[nEntries_EJ200] = { 0.05, 0.25, 0.55, 1.00, 0.0};
 
+    G4double efficiency[nEntries_EJ200]={0.,0.,0.,0.,0};
+
     fEJ200MPT = new G4MaterialPropertiesTable();
     fEJ200MPT->AddProperty("RINDEX",       PhotonEnergy, RefractiveIndex_EJ200, nEntries_EJ200);
     fEJ200MPT->AddProperty("ABSLENGTH",    PhotonEnergy, Absorption_EJ200,      nEntries_EJ200);
     fEJ200MPT->AddProperty("FASTCOMPONENT",PhotonEnergy, ScintilFast_EJ200,     nEntries_EJ200);
+    fEJ200MPT->AddProperty("EFFICIENCY",PhotonEnergy,efficiency,nEntries_EJ200);
 
     fEJ200MPT->AddConstProperty("SCINTILLATIONYIELD", 1/keV); //10,000 Photons per MeV
     fEJ200MPT->AddConstProperty("RESOLUTIONSCALE",1.0); // Intrinsic resolution

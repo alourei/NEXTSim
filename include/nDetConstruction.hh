@@ -60,7 +60,6 @@
  *
  */
 
-
 /** \class nDetConstruction
  *  \brief This class defines the geometry of the detector.
  *

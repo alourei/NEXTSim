@@ -79,13 +79,14 @@ void nDetHit::Draw()
 void nDetHit::Print()
 {
 
-  G4cout << "  particle: " << GetParticleName()
-         << "  process: " << GetProcessName()
+  G4cout << "  particle: " << GetParticleName()<<G4endl
+         << "  process: " << GetProcessName()<<G4endl
          << "  time: " << G4BestUnit(time,"Time")
          << "  position: " << G4BestUnit(pos,"Length")
          << "  Kinetic Energy: " << G4BestUnit(ekin,"Energy")
-         << "  momentum: " << momentum
-         << "  Scattering Angle: " << scatteringAngle/degree << G4endl;
+         << "  momentum: " << G4BestUnit(momentum,"Energy")
+         << "  Scattering Angle: " << scatteringAngle/degree << G4endl
+         << "  Layer Number: " << layerNumber << G4endl;
 
 }
 

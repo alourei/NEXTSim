@@ -1,7 +1,7 @@
-NEXTsim
+NEXTSim
 ========
 
-NEXTsim is a [Geant4](https://geant4.web.cern.ch/geant4/)/[ROOT](https://root.cern.ch/)based software devoted to simulate and optimize the performance of the NEXT neutron detector
+NEXTSim is a [Geant4](https://geant4.web.cern.ch/geant4/)/[ROOT](https://root.cern.ch/) based software devoted to simulate and optimize the performance of the NEXT neutron detector
 
 
 Authors
@@ -55,4 +55,4 @@ If you are having issues, please let us know.
 License
 -------
 
-NEXTsim is distributed under the terms of the GNU Lesser General Public Licence version 3 (LGPL)
+NEXTSim is distributed under the terms of the GNU Lesser General Public Licence version 3 (LGPL)
