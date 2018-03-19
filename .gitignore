@@ -7,6 +7,7 @@ build/
 build_*
 ROOT_Output
 *.root
+*.bak
 doc/latex/*
 doc/html/*
 include/old/*
