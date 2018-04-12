@@ -463,6 +463,9 @@ void nDetAnalysisManager::EndOfEventAction(const G4Event *anEvent){
 
     FillScintHits(anEvent);
 
+    //G4cout<<"nDetAnalysisManager::EndOfEventAction()->"<<depEnergy<<" keV  deposited in this event"<<G4endl;
+
+
     if(fNbOfPhotons>0||depEnergy>0)
     FillTree();
     ResetEvent();

@@ -40,8 +40,8 @@ nDetPrimaryGeneratorAction::nDetPrimaryGeneratorAction(nDetRunAction* run)
   //G4ParticleDefinition* particle = G4Electron::ElectronDefinition();
 
     G4ParticleDefinition *particle =G4Geantino::GeantinoDefinition();
-    //SetNeutronDecayData("85As.dat");
-    SetNeutronDecayData("133In.dat");
+    SetNeutronDecayData("85As.dat");
+    //SetNeutronDecayData("133In.dat");
 
   particleGun->SetParticleDefinition(particle);
 
@@ -88,9 +88,14 @@ void nDetPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 
     G4double Pi=4*atan(1.0);
 
-    G4double theta = atan(12.5/100)*rad;
-    G4double phi0 = -atan(.3/100)*radian;
-    G4double phi = atan(.3/100)*radian;
+    //G4double theta = atan(12.5/100)*rad;
+    //G4double phi0 = -atan(.3/100)*radian;
+    //G4double phi = atan(.3/100)*radian;
+
+    G4double theta = atan(1./4.)*rad;
+    G4double phi0 = -atan(1./4.)*radian;
+    G4double phi = atan(1./4.)*radian;
+
 
     GenerateIsotropicDirectionDistribution(&direction,Pi/2-theta,Pi/2+theta,phi0,phi);
 

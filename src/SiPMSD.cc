@@ -79,7 +79,7 @@ G4bool SiPMSD::ProcessHits_constStep(const G4Step *aStep, G4TouchableHistory *RO
           <<" "<<aStep->GetPostStepPoint()->GetTouchable()->GetVolume(1)->GetCopyNo()<<G4endl;
     */
 
-    G4ThreeVector worldPosition=aStep->GetPreStepPoint()->GetPosition();
+    G4ThreeVector worldPosition=aStep->GetPostStepPoint()->GetPosition();
 
     //G4ThreeVector pos = aStep->GetPostStepPoint()->GetPosition();
 

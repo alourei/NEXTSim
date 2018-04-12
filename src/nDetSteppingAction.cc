@@ -99,8 +99,8 @@ void nDetSteppingAction::UserSteppingAction(const G4Step* aStep)
 //Xiaodong says we can put some code here.  GetParticleName 
 //step->track->particlename
 
-  //  G4String pname = aStep->GetTrack()->GetParticleDefinition()->GetParticleName();
-  //  G4cout << pname << G4endl;
+    G4String pname = aStep->GetTrack()->GetParticleDefinition()->GetParticleName();
+    //G4cout<< pname <<" Deposited Energy "<<edep/keV<<" non-ionizing "<<aStep->GetNonIonizingEnergyDeposit()/keV<<  G4endl;
 
     /* 
     G4cout<<G4BestUnit(edep,"Energy")<<"**";

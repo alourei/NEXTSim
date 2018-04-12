@@ -34,6 +34,8 @@ private:
     G4UIdirectory*    fDetectorDir;
 
     G4UIcmdWithAString*  fGeometryCmd;
+    G4UIcmdWithAString*  fWrappingCmd;
+    G4UIcmdWithAString*  fScintCmd;
     G4UIcmdWithADoubleAndUnit *fSiliconDimensionsCmd;
     G4UIcmdWithADoubleAndUnit *fDetectorLengthCmd;
     G4UIcmdWithADoubleAndUnit *fDetectorWidthCmd;

@@ -126,7 +126,7 @@ class nDetConstruction : public G4VUserDetectorConstruction
      * @param [in] distance: the distance
      */
     void SetDistance(G4double distance){fDistance=distance;}
-    /** Returns the Geometry time
+    /** Returns the Geometry type
      *
      * @return the String with the geometry type
      */
@@ -140,7 +140,27 @@ class nDetConstruction : public G4VUserDetectorConstruction
      *
      */
     void UpdateGeometry();
+    /** Sets the wrapping Material for the scintillator
+     *
+     * @param [in]  aMaterial: tha name of the wrapping material
+     */
+    void SetWrappingMaterial(G4String aMaterial){fWrappingMaterial = aMaterial;}
+    /**
+     *
+     * @return the string with the wrapping material name
+     */
+    G4String GetWrappingMaterial(){ return fWrappingMaterial;}
 
+    /** Sets the wrapping Material for the scintillator
+      *
+      * @param [in]  aMaterial: tha name of the scintillator material
+      */
+    void SetScintillatorMaterial(G4String aMaterial){fScintillatorMaterial = aMaterial;}
+    /**
+     *
+     * @return the string with the scintillator material name
+     */
+    G4String GetScintillatorMaterial(){ return fScintillatorMaterial;}
 
 private:
 
@@ -190,6 +210,9 @@ private:
     G4bool fCheckOverlaps;
     G4String fGeometry;
 
+    G4String fWrappingMaterial;
+    G4String fScintillatorMaterial;
+
     // logical and physical volume
     G4LogicalVolume* expHall_logV;
     G4LogicalVolume* assembly_logV;
@@ -223,6 +246,9 @@ private:
     G4Material* fSiO2;
     G4Material* fSil;
     G4Material* fMylar;
+
+    G4Material* fWrapping;
+    G4Material *fScintillator;
 
     //Material table properties
     G4MaterialPropertiesTable* fAirMPT;

@@ -55,6 +55,8 @@ nDetConstruction::nDetConstruction()
     //fGeometry="rectangle";
     //fGeometry="bent";
 
+    fWrappingMaterial = "teflon";
+    fScintillatorMaterial = "ej200";
     fCheckOverlaps = false;
   fTeflonThickness = 0.11*mm;
   //fMylarThickness = 0.0125*mm;
@@ -118,7 +120,19 @@ G4VPhysicalVolume* nDetConstruction::ConstructDetector(){
   // build assembly volume
   //buildAssembly();
 
-  //build Disk volume
+
+    if(fWrappingMaterial=="teflon")
+        fWrapping=fTeflon;
+    if(fWrappingMaterial == "Mylar")
+        fWrapping=fMylar;
+
+    if(fScintillatorMaterial == "ej200")
+        fScintillator=fEJ200;
+
+    if(fScintillatorMaterial == "ej299")
+        fScintillator = fEJ299;
+
+    //build Disk volume
     if(fGeometry == "disk")
         buildDisk();
     if(fGeometry == "hexagon")
@@ -168,16 +182,23 @@ void nDetConstruction::buildAssembly()
   //-----------------------------------------------------------
 
    G4Box* assemblyBox = new G4Box("assembly", assemblyBoxX, assemblyBoxY, assemblyBoxZ);
-  assembly_logV = new G4LogicalVolume(assemblyBox, fTeflon, "assembly");
+  assembly_logV = new G4LogicalVolume(assemblyBox, fWrapping, "assembly");
   assembly_physV = new G4PVPlacement(0,
 				     G4ThreeVector(assemblyPx, assemblyPy, assemblyPz),
  				     assembly_logV,
 				     "assembly_physV",
 				     expHall_logV,
 				     false, 0);
+    if(fWrappingMaterial == "teflon") {
 
-  fWrapSkinSurface = new G4LogicalSkinSurface("teflonSurface", assembly_logV, fTeflonOpticalSurface);
+        fWrapSkinSurface = new G4LogicalSkinSurface("teflonSurface", assembly_logV, fTeflonOpticalSurface);
+    }
 
+    if(fWrappingMaterial == "mylar"){
+
+        fWrapSkinSurface = new G4LogicalSkinSurface("MylarSurface", assembly_logV, fMylarOpticalSurface);
+
+    }
 
   //----------------------------------------------------------------
   //    scintillator bars
@@ -185,7 +206,7 @@ void nDetConstruction::buildAssembly()
 
   G4Box* ej200_solidV = new G4Box("ej200_solidV", ej200X, ej200Y, ej200Z);
 
-  ej200_logV = new G4LogicalVolume(ej200_solidV, fEJ200, "ej200_logV", 0, 0, 0);
+  ej200_logV = new G4LogicalVolume(ej200_solidV, fScintillator, "ej200_logV", 0, 0, 0);
 
   G4VisAttributes* ej200_VisAtt= new G4VisAttributes(G4Colour(0.0,0.0,1.0));//blue
   ej200_logV->SetVisAttributes(ej200_VisAtt);
@@ -422,7 +443,7 @@ void nDetConstruction::buildDisk()
     G4SubtractionSolid *theSolid=new G4SubtractionSolid("Wrapping",assemblyDisk,Hole);
 
 
-    assembly_logV = new G4LogicalVolume(theSolid, fTeflon, "Wrap");
+    assembly_logV = new G4LogicalVolume(theSolid, fWrapping, "Wrap");
 
 
     G4RotationMatrix *rotationMatrix_Disk=new G4RotationMatrix;
@@ -440,7 +461,17 @@ void nDetConstruction::buildDisk()
     //----------------------------------------------------------------
 
 
-  G4LogicalSkinSurface* assemblySkin = new G4LogicalSkinSurface("teflonSUrface", assembly_logV, fTeflonOpticalSurface);
+    if(fWrappingMaterial == "teflon") {
+
+        G4LogicalSkinSurface* assemblySkin = new G4LogicalSkinSurface("teflonSurface", assembly_logV, fTeflonOpticalSurface);
+    }
+
+    if(fWrappingMaterial == "mylar"){
+
+        G4LogicalSkinSurface* assemblySkin = new G4LogicalSkinSurface("MylarSurface", assembly_logV, fMylarOpticalSurface);
+
+    }
+
 
 
      minDiskRadius=0*mm;
@@ -476,7 +507,7 @@ void nDetConstruction::buildDisk()
     G4SubtractionSolid *theScint=new G4SubtractionSolid("Detector",scintillatorDisk,Hole2);
   
     
-  ej200_logV = new G4LogicalVolume(theScint, fEJ200, "ej200_logV", 0, 0, 0);
+  ej200_logV = new G4LogicalVolume(theScint, fScintillator, "ej200_logV", 0, 0, 0);
 
   G4VisAttributes* ej200_VisAtt= new G4VisAttributes(G4Colour(0.0,0.0,1.0));//blue
   //ej200_VisAtt->SetForceSolid(true);
@@ -748,12 +779,21 @@ void nDetConstruction::buildEllipse() {
 
 
 
-    assembly_logV=new G4LogicalVolume(theWrapping,fTeflon,"Wrapping_log");
+    assembly_logV=new G4LogicalVolume(theWrapping,fWrapping,"Wrapping_log");
 
     G4VPhysicalVolume *Wrapping_physVol=new G4PVPlacement(0,G4ThreeVector(0,0,0),assembly_logV,"Wrap",expHall_logV,0,0,true);
 
-    G4LogicalSkinSurface *thePlasticSkin=new G4LogicalSkinSurface("Wrapping",assembly_logV,fTeflonOpticalSurface);
 
+    if(fWrappingMaterial == "teflon") {
+
+        G4LogicalSkinSurface *thePlasticSkin = new G4LogicalSkinSurface("teflonSurface", assembly_logV, fTeflonOpticalSurface);
+    }
+
+    if(fWrappingMaterial == "mylar"){
+
+        G4LogicalSkinSurface *thePlasticSkin = new G4LogicalSkinSurface("MylarSurface", assembly_logV, fMylarOpticalSurface);
+
+    }
 
 
 
@@ -800,7 +840,7 @@ void nDetConstruction::buildEllipse() {
        thePlastic=new G4Box("thePlastic",xdimension,ydimension,zdimension);
 
 
-    ej200_logV=new G4LogicalVolume(thePlastic,fEJ200,"plastic_log");
+    ej200_logV=new G4LogicalVolume(thePlastic,fScintillator,"plastic_log");
     //thePlastic_log->SetSensitiveDetector(fScintSD);
     G4VisAttributes* ej200_VisAtt= new G4VisAttributes(G4Colour(0.0,0.0,1.0));//blue
     ej200_logV->SetVisAttributes(ej200_VisAtt);
@@ -862,14 +902,15 @@ void nDetConstruction::DefineMaterials() {
 
     G4double photonEnergy_teflon[nEntries_Teflon] = {2.*eV, 3.47*eV};
     G4double refl_teflon[nEntries_Teflon] = {0.99, 0.99};
-    //G4double refl_teflon[nEntries_Teflon] = {0.5, 0.5};
+    G4double trans_teflon[nEntries_Teflon] = {0.01, 0.01};
     G4double effi_teflon[nEntries_Teflon] = {0., 0.};
     G4double Absorption_Teflon[nEntries_Teflon] =  { 0.333 * cm ,0.333 * cm  };
     G4double refractiveIndex_teflon[nEntries_Teflon] = {1.315, 1.315};
     fTeflonMPT->AddProperty("REFLECTIVITY", photonEnergy_teflon, refl_teflon, nEntries_Teflon);
-    fTeflonMPT->AddProperty("EFFICIENCY", photonEnergy_teflon, effi_teflon, nEntries_Teflon);
+    //fTeflonMPT->AddProperty("EFFICIENCY", photonEnergy_teflon, effi_teflon, nEntries_Teflon);
     fTeflonMPT->AddProperty("RINDEX", photonEnergy_teflon,refractiveIndex_teflon,nEntries_Teflon);
     fTeflonMPT->AddProperty("ABSLENGTH", photonEnergy_teflon,Absorption_Teflon,nEntries_Teflon);
+    fTeflonMPT->AddProperty("TRANSMITTANCE",photonEnergy_teflon,trans_teflon,nEntries_Teflon);
 
     G4cout<<"Teflon Material Properties Table"<<G4endl;
     fTeflonMPT->DumpTable();
@@ -904,17 +945,17 @@ void nDetConstruction::DefineMaterials() {
     fEJ200MPT->AddProperty("RINDEX",       PhotonEnergy, RefractiveIndex_EJ200, nEntries_EJ200);
     fEJ200MPT->AddProperty("ABSLENGTH",    PhotonEnergy, Absorption_EJ200,      nEntries_EJ200);
     fEJ200MPT->AddProperty("FASTCOMPONENT",PhotonEnergy, ScintilFast_EJ200,     nEntries_EJ200);
-    fEJ200MPT->AddProperty("EFFICIENCY",PhotonEnergy,efficiency,nEntries_EJ200);
+    //fEJ200MPT->AddProperty("EFFICIENCY",PhotonEnergy,efficiency,nEntries_EJ200);
 
-    fEJ200MPT->AddConstProperty("SCINTILLATIONYIELD", 1/keV); //10,000 Photons per MeV
+    fEJ200MPT->AddConstProperty("SCINTILLATIONYIELD", 10/keV); //10,000 Photons per MeV
     fEJ200MPT->AddConstProperty("RESOLUTIONSCALE",1.0); // Intrinsic resolution
 
-    //fEJ200MPT->AddConstProperty("RISETIMECONSTANT", 0.9*ns); Geant4 10.1 TODO
+    fEJ200MPT->AddConstProperty("RISETIMECONSTANT", 0.9*ns); //Geant4 10.1 TODO
     //fEJ200MPT->AddConstProperty("FASTSCINTILLATIONRISETIME", 0.9*ns);
-    //fEJ200MPT->AddConstProperty("FASTSCINTILLATIONRISETIME", 0.5*ns); //TODO DPL changing rise time to 500 ps
 
-    //fEJ200MPT->AddConstProperty("FASTTIMECONSTANT", 2.1*ns);
-    fEJ200MPT->AddConstProperty("FASTTIMECONSTANT", 0.01*ns); //TODO DPL Get Back to 2.1 ns
+
+    fEJ200MPT->AddConstProperty("FASTTIMECONSTANT", 2.1*ns);
+    //fEJ200MPT->AddConstProperty("FASTTIMECONSTANT", 0.01*ns); //TODO DPL Get Back to 2.1 ns
     fEJ200MPT->AddConstProperty("YIELDRATIO",1);// the strength of the fast component as a function of total scintillation yield
 
 
@@ -975,6 +1016,82 @@ void nDetConstruction::DefineMaterials() {
 
     fEJ200->SetMaterialPropertiesTable(fEJ200MPT);
 
+
+    // define the EJ299 Material
+
+    density = 1.096*g/cm3;
+
+    fEJ299 = new G4Material("EJ299", density, 2);
+    fEJ299->AddElement(fH, 10);
+    fEJ299->AddElement(fC,9);
+
+    const G4int nEntries_EJ299 = 5;
+
+
+    G4double PhotonEnergyEJ299[nEntries_EJ299] =
+            { 2.484*eV, 2.615*eV, 2.760*eV, 2.922*eV, 3.105*eV };
+
+    G4double RefractiveIndex_EJ299[nEntries_EJ299] = { 1.58, 1.58, 1.58, 1.58, 1.58 };
+    G4double Absorption_EJ299[nEntries_EJ299] =  { 400*cm, 400*cm, 400*cm, 400*cm, 400*cm };
+    G4double ScintilFast_EJ299[nEntries_EJ299] = { 0.05, 0.25, 0.55, 1.00, 0.0};
+
+    G4double efficiencyEJ299[nEntries_EJ299]={0.,0.,0.,0.,0};
+
+    fEJ299MPT = new G4MaterialPropertiesTable();
+    fEJ299MPT->AddProperty("RINDEX",       PhotonEnergyEJ299, RefractiveIndex_EJ299, nEntries_EJ299);
+    fEJ299MPT->AddProperty("ABSLENGTH",    PhotonEnergyEJ299, Absorption_EJ299,      nEntries_EJ299);
+    fEJ299MPT->AddProperty("FASTCOMPONENT",PhotonEnergyEJ299, ScintilFast_EJ299,     nEntries_EJ299);
+    fEJ299MPT->AddProperty("EFFICIENCY",PhotonEnergyEJ299,efficiencyEJ299,nEntries_EJ299);
+
+    fEJ299MPT->AddConstProperty("SCINTILLATIONYIELD", 8600/MeV); //8,600 Photons per MeV
+    fEJ299MPT->AddConstProperty("RESOLUTIONSCALE",1.0); // Intrinsic resolution
+
+    //fEJ200MPT->AddConstProperty("RISETIMECONSTANT", 0.9*ns); Geant4 10.1 TODO
+    //fEJ200MPT->AddConstProperty("FASTSCINTILLATIONRISETIME", 0.9*ns);
+    //fEJ200MPT->AddConstProperty("FASTSCINTILLATIONRISETIME", 0.5*ns); //TODO DPL changing rise time to 500 ps
+
+    fEJ299MPT->AddConstProperty("FASTTIMECONSTANT", 13*ns);
+    fEJ299MPT->AddConstProperty("SLOWTIMECONSTANT", 460*ns); //TODO DPL Get Back to 2.1 ns
+    fEJ299MPT->AddConstProperty("YIELDRATIO",0.513);// Comrie et al. PoS(TIPP2014) 251
+
+
+    G4cout<<"EJ-299 Material Properties Table"<<G4endl;
+    fEJ299MPT->DumpTable();
+
+    pEF = 1; //SiPM efficiency (TODO - discuss it)
+    protonScalingFact = 1.35;
+
+
+    //light yield - data taken form V.V. Verbinski et al, Nucl. Instrum. & Meth. 65 (1968) 8-25
+    energyPoints = 26;
+
+    G4double scintillationYield=0.86;
+
+
+    for(G4int jj=0;jj<energyPoints;jj++){
+
+        electronYield[jj]*=scintillationYield;
+        protonYield[jj]*=scintillationYield;
+        ionYield[jj]*=scintillationYield;
+    }
+
+    fEJ299MPT->AddProperty("ELECTRONSCINTILLATIONYIELD",
+                           particleEnergy, electronYield,
+                           energyPoints)->SetSpline(true);
+
+
+    fEJ299MPT->AddProperty("PROTONSCINTILLATIONYIELD",
+                           particleEnergy, protonYield,
+                           energyPoints)->SetSpline(true);
+
+
+    fEJ299MPT->AddProperty("IONSCINTILLATIONYIELD",
+                           particleEnergy, ionYield,
+                           energyPoints)->SetSpline(true);
+
+
+
+    fEJ299->SetMaterialPropertiesTable(fEJ299MPT);
 
 
 
@@ -1056,6 +1173,10 @@ void nDetConstruction::DefineMaterials() {
     //TODO Uncommment
     fTeflonOpticalSurface->SetType(dielectric_dielectric);
 
+    //fTeflonOpticalSurface->SetType(dielectric_LUT);
+    //fTeflonOpticalSurface->SetFinish(polishedteflonair);
+    //fTeflonOpticalSurface->SetModel(LUT);
+
     fTeflonOpticalSurface->SetMaterialPropertiesTable(fTeflonMPT);
 
 
@@ -1088,6 +1209,8 @@ void nDetConstruction::DefineMaterials() {
     fMylarMPT->AddProperty("IMAGINARYRINDEX", PhotonEnergy,RefractiveImg_Mylar,nEntries_Mylar);
 
     fMylarOpticalSurface=new G4OpticalSurface("MylarSurface",glisur,polished,dielectric_metal,1.0);
+
+    fMylarOpticalSurface->SetMaterialPropertiesTable(fMylarMPT);
 
     return;
 }
@@ -1383,10 +1506,21 @@ void nDetConstruction::buildEllipse2() {
     G4UnionSolid *theWrapping=new G4UnionSolid("Wrap",theWrapping0,wrappinBox,0,translation11);
 
 
-    assembly_logV=new G4LogicalVolume(theWrapping,fTeflon,"Wrapping_log");
+    assembly_logV=new G4LogicalVolume(theWrapping,fWrapping,"Wrapping_log");
 
     //In Ellipse
-    fWrapSkinSurface=new G4LogicalSkinSurface("Wrapping",assembly_logV,fTeflonOpticalSurface);
+
+    if(fWrappingMaterial == "teflon") {
+
+        fWrapSkinSurface = new G4LogicalSkinSurface("Wrapping", assembly_logV, fTeflonOpticalSurface);
+    }
+
+    if(fWrappingMaterial == "mylar"){
+
+        fWrapSkinSurface = new G4LogicalSkinSurface("Wrapping", assembly_logV, fMylarOpticalSurface);
+
+    }
+
     //fWrapSkinSurface=new G4LogicalSkinSurface("Wrapping",assembly_logV,0); // TODO DPL  Equivalent to black tape
 
     G4VPhysicalVolume *Wrapping_physVol=new G4PVPlacement(0,G4ThreeVector(0,0,0),assembly_logV,"Wrap",expHall_logV,0,0,true);
@@ -1402,7 +1536,7 @@ void nDetConstruction::buildEllipse2() {
 
     G4VSolid *theScint=ConstructEllipse("Scint",dimensions2,ydimension);
 
-    ej200_logV=new G4LogicalVolume(theScint,fEJ200,"Scint_log");
+    ej200_logV=new G4LogicalVolume(theScint,fScintillator,"Scint_log");
 
     G4VisAttributes* ej200_VisAtt= new G4VisAttributes(G4Colour(0.0,0.0,1.0));//blue
     ej200_logV->SetVisAttributes(ej200_VisAtt);
@@ -1471,10 +1605,22 @@ void nDetConstruction::buildRectangle() {
 
     G4UnionSolid *theWrapping = new G4UnionSolid("wrapping",theWrapping0,wrappinBox,0,translation11);
 
-    assembly_logV = new G4LogicalVolume(theWrapping,fTeflon,"wrap_log");
+    assembly_logV = new G4LogicalVolume(theWrapping,fWrapping,"wrap_log");
 
     //In Rectangle
-    fWrapSkinSurface = new G4LogicalSkinSurface("wrapping",assembly_logV,fTeflonOpticalSurface); //Outside
+
+    if(fWrappingMaterial == "teflon") {
+
+        fWrapSkinSurface = new G4LogicalSkinSurface("Wrapping", assembly_logV, fTeflonOpticalSurface);
+    }
+
+    if(fWrappingMaterial == "mylar"){
+
+        fWrapSkinSurface = new G4LogicalSkinSurface("Wrapping", assembly_logV, fMylarOpticalSurface);
+
+    }
+
+
     //fWrapSkinSurface = new G4LogicalSkinSurface("wrapping",assembly_logV,0); //Outside
 
 
@@ -1488,7 +1634,7 @@ void nDetConstruction::buildRectangle() {
 
     G4Box *theScint=new G4Box("scintillator",xdimension/2,ydimension/2,zdimension/2);
 
-    ej200_logV = new G4LogicalVolume(theScint,fEJ200,"scint_log");
+    ej200_logV = new G4LogicalVolume(theScint,fScintillator,"scint_log");
 
     //fWrapSkinSurface=new G4LogicalSkinSurface("Wrapping",ej200_logV,fTeflonOpticalSurface); // Inside TODO DPL
 
@@ -1562,9 +1708,20 @@ void nDetConstruction::buildDisk2() {
     G4VSolid *theWrapping = ConstructHexagon("theWrapping",DiskRadius,thickness,BoxDimensions);
 
 
-    assembly_logV = new G4LogicalVolume(theWrapping,fTeflon,"Wrap");
+    assembly_logV = new G4LogicalVolume(theWrapping,fWrapping,"Wrap");
 
-    fWrapSkinSurface = new G4LogicalSkinSurface("WrapSkin",assembly_logV,fTeflonOpticalSurface);
+
+    if(fWrappingMaterial == "teflon") {
+
+        fWrapSkinSurface = new G4LogicalSkinSurface("Wrapping", assembly_logV, fTeflonOpticalSurface);
+    }
+
+    if(fWrappingMaterial == "mylar"){
+
+        fWrapSkinSurface = new G4LogicalSkinSurface("Wrapping", assembly_logV, fMylarOpticalSurface);
+
+    }
+
 
 
     G4RotationMatrix *rotationMatrix_Disk = new G4RotationMatrix;
@@ -1594,7 +1751,7 @@ void nDetConstruction::buildDisk2() {
 
     G4VSolid *theScint = ConstructHexagon("theScint",DiskRadius,thickness,BoxDimensions2);
 
-    ej200_logV = new G4LogicalVolume(theScint, fEJ200, "ej200_logV", 0, 0, 0);
+    ej200_logV = new G4LogicalVolume(theScint, fScintillator, "ej200_logV", 0, 0, 0);
 
     G4VisAttributes *ej200_VisAtt = new G4VisAttributes(G4Colour(0.0, 0.0, 1.0));//blue
     //ej200_VisAtt->SetForceSolid(true);
@@ -1867,9 +2024,19 @@ void nDetConstruction::PlaceNEXTModule(G4RotationMatrix *theRotation, G4ThreeVec
 
     //G4Box * theWrapping = new G4Box("Wrapping",wrapping_width2/2,wrapping_thickness/2,wrapping_length/2);
 
-    assembly_logV = new G4LogicalVolume (theWrapping,fTeflon,"theWrapping_log");
+    assembly_logV = new G4LogicalVolume (theWrapping,fWrapping,"theWrapping_log");
 
-    fWrapSkinSurface = new G4LogicalSkinSurface("WrapSkin",assembly_logV,fTeflonOpticalSurface);
+    if(fWrappingMaterial == "teflon") {
+
+        fWrapSkinSurface = new G4LogicalSkinSurface("Wrapping", assembly_logV, fTeflonOpticalSurface);
+    }
+
+    if(fWrappingMaterial == "mylar"){
+
+        fWrapSkinSurface = new G4LogicalSkinSurface("Wrapping", assembly_logV, fMylarOpticalSurface);
+
+    }
+
 
     //rot->rotateY(90*deg);
     G4ThreeVector wrapping_position(0,0,0);
@@ -1884,7 +2051,7 @@ void nDetConstruction::PlaceNEXTModule(G4RotationMatrix *theRotation, G4ThreeVec
     //G4Box * TheScint = new G4Box("Wrapping",array_length/2,fDetectorThickness/2,fDetectorLength/2);
 
     if(CopyNo==0)
-    ej200_logV=new G4LogicalVolume(TheScint,fEJ200,"ej200_logV");
+    ej200_logV=new G4LogicalVolume(TheScint,fScintillator,"ej200_logV");
 
     G4VisAttributes* Array_VisAtt= new G4VisAttributes(G4Colour(0.0,1.0,1.0));//green
     ej200_logV->SetVisAttributes(Array_VisAtt);
@@ -1943,7 +2110,7 @@ void nDetConstruction::PlaceNEXTModule(G4RotationMatrix *theRotation, G4ThreeVec
     G4double BoxZ = SiPM_dimension+fTeflonThickness;
     G4Box *TheArrayBox=new G4Box("Array",BoxX,BoxY,BoxZ);
 
-    G4LogicalVolume *theArray_log = new G4LogicalVolume(TheArrayBox,fTeflon,"Array",0);
+    G4LogicalVolume *theArray_log = new G4LogicalVolume(TheArrayBox,fWrapping,"Array",0);
 
 
     G4Box *GreaseBox = new G4Box("Grease",greaseX,greaseY,greaseZ);
@@ -2023,7 +2190,7 @@ void nDetConstruction::buildCylinder(){
 
     G4Tubs *theWrapping = new G4Tubs("Wrapping",Rmin,Rmax,Width,StartAngle,EndAngle);
 
-    assembly_logV = new G4LogicalVolume(theWrapping,fTeflon,"wrap_log");
+    assembly_logV = new G4LogicalVolume(theWrapping,fWrapping,"wrap_log");
 
     G4RotationMatrix *theRot=new G4RotationMatrix();
     theRot->rotateX(90*degree);
@@ -2033,7 +2200,17 @@ void nDetConstruction::buildCylinder(){
     assembly_physV = new G4PVPlacement(theRot,thepos,assembly_logV,"wrapping_phys",expHall_logV,0,0,false);
 
 
-    fWrapSkinSurface = new G4LogicalSkinSurface("WrapSkin",assembly_logV,fTeflonOpticalSurface);
+    if(fWrappingMaterial == "teflon") {
+
+        fWrapSkinSurface = new G4LogicalSkinSurface("Wrapping", assembly_logV, fTeflonOpticalSurface);
+    }
+
+    if(fWrappingMaterial == "mylar"){
+
+        fWrapSkinSurface = new G4LogicalSkinSurface("Wrapping", assembly_logV, fMylarOpticalSurface);
+
+    }
+
 
     Rmin = Distance-fDetectorThickness/2;
     Rmax = Distance+fDetectorThickness/2;
@@ -2047,7 +2224,7 @@ void nDetConstruction::buildCylinder(){
 
     G4Tubs *theScint = new G4Tubs("Scint",Rmin,Rmax,Width,StartAngle,EndAngle);
 
-    ej200_logV = new G4LogicalVolume(theScint,fEJ200,"Scint");
+    ej200_logV = new G4LogicalVolume(theScint,fScintillator,"Scint");
 
     G4VisAttributes* ej200_VisAtt= new G4VisAttributes(G4Colour(0.0,0.0,1.0));//blue
 

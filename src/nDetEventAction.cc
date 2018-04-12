@@ -15,7 +15,7 @@
 #include "G4Trajectory.hh"
 #include "G4VVisManager.hh"
 #include "G4ios.hh"
-
+#include "G4SystemOfUnits.hh"
 #include "nDetUserEventInformation.hh"
 #include "G4EventManager.hh"
 #include "G4SDManager.hh"
@@ -99,7 +99,8 @@ void nDetEventAction::EndOfEventAction(const G4Event* evt)
 
     
     if(fpEventManager->GetVerboseLevel()==1){
-    G4cout<<"nDetEventAction::EndOfEventAction()->"<<nDetections<<" Photons detected in this event"<<G4endl;
+        G4cout<<"nDetEventAction::EndOfEventAction()->"<<nDetections<<" Photons detected in this event"<<G4endl;
+        G4cout<<"nDetEventAction::EndOfEventAction()->"<<depositedEnergy/keV<<" keV  deposited in this event"<<G4endl;
         //theEventInformation->Print();
     }
 

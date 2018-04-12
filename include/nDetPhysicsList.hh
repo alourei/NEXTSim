@@ -73,6 +73,7 @@ private:
     nDetPhysicsMessenger *fPhysicsMessenger; ///< Pointer to the Physics Messenger
     G4bool useOpticalPhotons;                ///< Flag for Optical Photons
     G4bool useScintillationByPID;            ///< Flag for different scintillation by Particle type
+    G4bool usePIDScintillation;              ///< Flag for different scintillation by Particle type for PID purposes
 
 };
 

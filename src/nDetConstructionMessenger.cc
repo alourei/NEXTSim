@@ -24,6 +24,25 @@ nDetConstructionMessenger::nDetConstructionMessenger(nDetConstruction* detector)
     fGeometryCmd->SetDefaultValue("disk");
     fGeometryCmd->AvailableForStates(G4State_PreInit,G4State_Idle);
 
+
+    fWrappingCmd=new G4UIcmdWithAString("/nDet/detector/setWrapping",this);
+    fWrappingCmd->SetGuidance("Defines the wrapping material of the detector");
+    fWrappingCmd->SetGuidance("Default is teflon");
+    fWrappingCmd->SetCandidates("teflon mylar");
+    fWrappingCmd->SetParameterName("wrapping",true);
+    fWrappingCmd->SetDefaultValue("teflon");
+    fWrappingCmd->AvailableForStates(G4State_PreInit,G4State_Idle);
+
+
+    fScintCmd=new G4UIcmdWithAString("/nDet/detector/setScintillator",this);
+    fScintCmd->SetGuidance("Defines the Scintillator material of the detector");
+    fScintCmd->SetGuidance("Default is EJ200");
+    fScintCmd->SetCandidates("EJ200 EJ299 ej200 ej299");
+    fScintCmd->SetParameterName("scintillator",true);
+    fScintCmd->SetDefaultValue("EJ200");
+    fScintCmd->AvailableForStates(G4State_PreInit,G4State_Idle);
+
+
     fSiliconDimensionsCmd=new G4UIcmdWithADoubleAndUnit("/nDet/detector/setSiPMdimensions",this);
     fSiliconDimensionsCmd->SetGuidance("Defines the size of the SiPMs (default mm)");
     fSiliconDimensionsCmd->SetDefaultUnit("mm");
@@ -82,6 +101,10 @@ nDetConstructionMessenger::~nDetConstructionMessenger(){
 
     delete fDistanceCmd;
 
+    delete fWrappingCmd;
+
+    delete fScintCmd;
+
     //G4cout<<"nDetConstructionMessenger::~nDetConstructionMessenger()->"<<fGeometryCmd<<G4endl;
 }
 
@@ -89,6 +112,18 @@ void nDetConstructionMessenger::SetNewValue(G4UIcommand* command,G4String newVal
 
     if(command == fGeometryCmd){
         fDetector->SetGeometry(newValue);
+    }
+
+    if(command == fWrappingCmd){
+        fDetector->SetWrappingMaterial(newValue);
+        G4cout<<"nDet/detector/setWrapping-> "<<newValue<<G4endl;
+    }
+
+    if(command == fScintCmd){
+        newValue.toLower();
+        fDetector->SetScintillatorMaterial(newValue);
+        G4cout<<"nDet/detector/setScintillator-> "<<newValue<<G4endl;
+
     }
 
     if(command == fSiliconDimensionsCmd) {

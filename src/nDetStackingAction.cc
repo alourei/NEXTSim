@@ -67,8 +67,8 @@ nDetStackingAction::ClassifyNewTrack(const G4Track * aTrack) {
 
 void nDetStackingAction::NewStage()
 {
-  //G4cout << "nDetStackingAction::NewStage()->No. optical photons produces in this event : "
-         //<< photonNb << G4endl;
+  //G4cout << "nDetStackingAction::NewStage()->No. optical photons produced in this event : "
+    //     << photonNb << G4endl;
 
 
 

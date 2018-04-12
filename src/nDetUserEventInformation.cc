@@ -18,6 +18,6 @@ nDetUserEventInformation::~nDetUserEventInformation() {}
 void nDetUserEventInformation::Print() const {
 
     G4cout<<"nDetUserEventInformation::Print()-> Total Number of Detections:"<<GetDetectionCount()<<G4endl;
-    G4cout<<"nDetUserEventInformation::Print()-> Total Number of Absortions:"<<GetAbsortionCount()<<G4endl;
+    G4cout<<"nDetUserEventInformation::Print()-> Total Number of Absorptions:"<<GetAbsortionCount()<<G4endl;
 
 }
