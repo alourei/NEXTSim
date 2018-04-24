@@ -40,3 +40,17 @@ void ScintHit::Print(Option_t *option) const {
 
 
 }
+
+
+void ScintHit::Reset(){
+
+    fPosition = TLorentzVector(-99,-99,-99,-99);
+    fMomentum = TLorentzVector(-99,-99,-99,-99);
+    fHitNo = -1;
+    fLayerNo = -1;
+    fTrackID = -1;
+    fParticleName = TString("");
+    fProcessName = TString("");
+    fDeltaE = -1;
+    fDepositedEnergy = -1;
+}

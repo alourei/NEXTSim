@@ -136,6 +136,11 @@ public:
      */
     virtual void Print(Option_t *option="")const ;
 
+    /**
+     * Resets the Hit information
+     */
+    void Reset();
+
     ClassDef(ScintHit,1);
 };
 

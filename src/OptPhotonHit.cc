@@ -13,10 +13,6 @@
  *  \date 03/02/2018
  */
 
-/**
- *  \class OptPhotonHit
- *  \brief Class to store the SiPM hits into the Output ROOT tree
- */
 
 /**
  * Default constructor
@@ -39,7 +35,6 @@ OptPhotonHit::~OptPhotonHit()
 {
 }
 
-
 void OptPhotonHit::Print(Option_t *option) const{
 
     std::cout<<"OptPhotonHit Information"<<std::endl;
@@ -50,5 +45,17 @@ void OptPhotonHit::Print(Option_t *option) const{
              <<"Detector Name: "<< fDetectorName<<" ID: "<<fDetectorID<<"\n"
              <<"Module Number: "<<fModuleNumber<<std::endl;
 
+
+}
+
+
+void OptPhotonHit::Reset(){
+
+    fPosition=TVector3(-99,-99,-99);
+    fTime = -1;
+    fLocalTime = -1;
+    fDetectorID = -1;
+    fModuleNumber = -1;
+    fWavelength = 0;
 
 }

@@ -19,7 +19,7 @@
 /** \class OptPhotonHit
  *  \brief Class to store the SiPM, PMT Hits in the  Output ROOT file
  *
- *  Stores the infomration of the optical photon hits in the sensitive detector. SiPM or PMT
+ *  Stores the information of the optical photon hits in the sensitive detector. SiPM or PMT
  */
 class OptPhotonHit : public TObject {
 
@@ -118,6 +118,10 @@ public:
      * Prints the Hit Information
      */
     virtual void Print(Option_t *option="") const;
+    /**
+     * Resets the hit information
+     */
+    void Reset();
 
     ClassDef(OptPhotonHit,1);
 };

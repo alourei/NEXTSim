@@ -601,11 +601,14 @@ void nDetAnalysisManager::FillOptPhotonHits(const G4Event *anEvent) {
 
         G4int NbOfHits=DHC_SiPM->entries();
 
+        //We create an OptPhotonHit
+        OptPhotonHit *theHit=new OptPhotonHit();
+
         for(G4int i=0; i< NbOfHits;i++){
 
         //We create an OptPhotonHit for each Geant4 hit
 
-        OptPhotonHit *theHit=new OptPhotonHit();
+        theHit->Reset();
 
         G4ThreeVector pos =(*DHC_SiPM)[i]->GetPos();
         G4double ptime = (*DHC_SiPM)[i]->GetTime() / ns;
@@ -622,12 +625,14 @@ void nDetAnalysisManager::FillOptPhotonHits(const G4Event *anEvent) {
         theHit->SetDetectorID(detector);
         theHit->SetModuleNumber(moduleNumber);
         theHit->SetDetectorName(detectorName);
+        theHit->SetWaveLength(wavelength);
 
         new((*fCAOptPhotonHits)[i])OptPhotonHit(*theHit);
 
-        delete theHit;
 
         }
+        delete theHit;
+
     }
 }
 
@@ -653,12 +658,12 @@ void nDetAnalysisManager::FillScintHits(const G4Event *anEvent) {
 
         //G4cout<<"nDetAnalysisManager::FillScintHits()->NbOfHits: "<<NbOfHits<<G4endl;
 
+        //We create a ScintHit for each Geant4 hit
+        ScintHit *theHit=new ScintHit();
 
         for(G4int i=0;i<NbOfHits;i++){
 
-            //We create a ScintHit for each Geant4 hit
-
-            ScintHit *theHit=new ScintHit();
+            theHit->Reset();
 
             G4ThreeVector pos=(*DHC_Sci)[i]->GetPos();
             G4double time=(*DHC_Sci)[i]->GetTime();
@@ -683,9 +688,8 @@ void nDetAnalysisManager::FillScintHits(const G4Event *anEvent) {
 
             new((*fCAScintHits)[i])ScintHit(*theHit);
 
-            delete theHit;
-
         }
+        delete theHit;
     }
 
 }
