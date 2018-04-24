@@ -15,6 +15,12 @@
  *
  */
 
+
+/** \class OptPhotonHit
+ *  \brief Class to store the SiPM, PMT Hits in the  Output ROOT file
+ *
+ *  Stores the infomration of the optical photon hits in the sensitive detector. SiPM or PMT
+ */
 class OptPhotonHit : public TObject {
 
 private:
@@ -22,6 +28,7 @@ private:
     TVector3 fPosition; ///< The Position of the Hit in mm
     Double_t fTime;     ///< The Absolute Time in ns
     Double_t fLocalTime; ///< The Local time in ns
+    Double_t fWavelength; ///< The wavelength of the optical photon produced
     Int_t fDetectorID; ///< The SiPM Number
     Int_t fModuleNumber; ///< The Detector Layer
     TString fDetectorName; ///< The Detector Name
@@ -50,6 +57,11 @@ public:
      * @return The local time of the hit
      */
     Double_t GetLocalTime(){ return fLocalTime;}
+    /**
+     *
+     * @return the wavelength of the hit
+     */
+    Double_t GetWaveLength(){return fWavelength;}
     /**
      *
      * @return The detector Identifier
@@ -82,6 +94,11 @@ public:
      * @param[in] aTime: the local time of the hit
      */
     void SetLocalTime(Double_t aTime){fLocalTime = aTime;}
+    /**
+     *
+     * @param[in] aWavelength: the wavelength of the detected photon
+     */
+    void SetWaveLength(Double_t aWavelength){fWavelength=aWavelength;}
     /**
      *
      * @param[in] anID: the detector ID

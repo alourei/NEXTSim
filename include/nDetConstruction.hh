@@ -56,7 +56,7 @@
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-/** \file nDetConstruction
+/** \file nDetConstruction.hh
  *
  */
 

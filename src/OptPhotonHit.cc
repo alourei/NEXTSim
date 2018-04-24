@@ -29,6 +29,7 @@ OptPhotonHit::OptPhotonHit()
     fLocalTime = -1;
     fDetectorID = -1;
     fModuleNumber = -1;
+    fWavelength = 0;
 
 }
 /**
@@ -44,6 +45,7 @@ void OptPhotonHit::Print(Option_t *option) const{
     std::cout<<"OptPhotonHit Information"<<std::endl;
     std::cout<<"Position: ("<<fPosition.X()<<", "<<fPosition.Y()<<", "<<fPosition.Z()<<")"<<"\n";
     std::cout<<"Time: "<<fTime<<"\n"
+             <<"Wavelength: "<<fWavelength<<"\n"
              <<"Local time: "<<fLocalTime<<"\n"
              <<"Detector Name: "<< fDetectorName<<" ID: "<<fDetectorID<<"\n"
              <<"Module Number: "<<fModuleNumber<<std::endl;

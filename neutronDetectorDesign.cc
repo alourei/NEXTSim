@@ -146,7 +146,7 @@ that didn't work... this is horribly deprecated*/
 
     nDetAnalysisManager *theManager= new nDetAnalysisManager();
 
-  //Geant complains we need ot change this for multithreading.  Moving the following to nDetActionInitialization.cc
+  //Geant complains we need ot change this for multi-threading.  Moving the following to nDetActionInitialization.cc
   nDetRunAction* runAction =
                         new nDetRunAction();
   runManager->SetUserAction( runAction );
