@@ -133,7 +133,7 @@ class nDetConstruction : public G4VUserDetectorConstruction
     G4String GetGeometry(){return fGeometry;}
     /** Returns the distance between the detector and the source for bent geometry
      *
-     * @return
+     * @return the distance between detector and source
      */
     G4double GetDistance(){return fDistance;}
     /** Updates the geometry after setting new geometry parameters
@@ -246,6 +246,7 @@ private:
     G4Material* fSiO2;
     G4Material* fSil;
     G4Material* fMylar;
+    G4Material* fPterphenyl;
 
     G4Material* fWrapping;
     G4Material *fScintillator;
@@ -259,6 +260,7 @@ private:
     G4MaterialPropertiesTable* fSiO2MPT;
     G4MaterialPropertiesTable* fSilMPT;
     G4MaterialPropertiesTable* fMylarMPT;
+    G4MaterialPropertiesTable* fPterphenylMPT;
 
     //Optical Surfaces
     G4OpticalSurface* fTeflonOpticalSurface;

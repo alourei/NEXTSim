@@ -33,36 +33,83 @@
 class OptPhotonHit;
 class ScintHit;
 
+/** \class nDetAnalysisManager
+ *  \brief This class is used to manage the output of the simulation.
+ *
+ *  The information is a stored in a ROOT TFile containing of a TTree with TBranch of TClonesArray of
+ *  ScintHit and OptPhotonHit. Each entry of the Tree corresponds to a simulated event
+ */
 
 class nDetAnalysisManager:public G4RootAnalysisManager {
 
     public:
-
+    /** Default constructor */
     nDetAnalysisManager();
+    /** Default constructor */
     ~nDetAnalysisManager();
-
+     /** Returns the pointer to the ROOT Tree
+     *
+     * @return pointer to the Tree
+     */
     TTree* GetTree(){return fTree;}
+    /** Sets the  ROOT Tree
+     *
+     * @param[in] theTree pointer to the Tree
+     */
     void SetTree(TTree* theTree){fTree=theTree;}
+    /** Opens the ROOT file and initializes the the Tree branches
+     *
+     */
     void OpenROOTFile();
+    /** Writes the output ROOT file to disk
+     *
+     */
     void WriteFile();
+    /** Closes the ROOT file
+     *
+     */
     void CloseROOTFile();
+    /** Fills the Tree
+     *
+     */
     void FillTree();
+    /** Resets the event
+     *
+     */
     void ResetEvent();
-
+    /** Performs the actions needed at the beginning of each Run.
+     *
+     */
     void BeginOfRunAction(const G4Run *aRun);
+    /** Performs the actions needed at the end of each Run.
+     * @param[in] aRun pointer the the current G4Run
+     */
     void EndOfRunAction(const G4Run *aRun);
-
+    /** Performs the actions needed at the beginning of each Event.
+     * @param[in] aRun pointer the the current G4Run
+     */
     void BeginOfEventAction(const G4Event *anEvent);
+    /** Performs the actions needed at the end of each Event.
+     * @param[in] anEvent pointer the the current G4Event
+     */
     void EndOfEventAction(const G4Event *anEvent);
-
+    /** Performs the actions at the beginning of the tracking.
+     * @param[in] aTrack pointer the the current G4Track
+     */
     void ClassifyNewTrack(const G4Track * aTrack);
 
     void OnceAWhileDoIt(const G4bool DoItNow=false);
-
+    /** Performs the actions during event generation
+     * @param[in] anEvent pointer the the current G4Event
+     */
     void GeneratePrimaries(const G4Event *anEvent);
-
+    /** Performs the actions at the end of the tracking.
+     * @param[in] aTrack pointer the the current G4Track
+     */
     void PostUserTrackingAction (const G4Track *aTrack);
-
+    /** Sets the name of the ROOT output file.
+     * @param[in] OutputName the name of the output file
+     */
     void SetOutputFileName(const G4String OutputName){fFileName=OutputName;}
 
     void SetGossipFileName(const G4String OutputName){fgossipFileName=OutputName;}
@@ -75,7 +122,13 @@ class nDetAnalysisManager:public G4RootAnalysisManager {
 
     void ProcessGossip( const SiPMHitsCollection *DHC_SiPM);
 
+    /** Fills the Optical Photon Hits.
+     * @param[in] anEvent pointer to the current GEANT4 event
+     */
     void FillOptPhotonHits( const G4Event *anEvent);
+    /** Fills the Scintillator Hits.
+      * @param[in] anEvent pointer to the current GEANT4 event
+      */
     void FillScintHits(const G4Event *anEvent);
 
 private:

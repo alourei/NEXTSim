@@ -55,8 +55,8 @@ nDetConstruction::nDetConstruction()
     //fGeometry="rectangle";
     //fGeometry="bent";
 
-    fWrappingMaterial = "teflon";
-    fScintillatorMaterial = "ej200";
+    fWrappingMaterial = "mylar";
+    fScintillatorMaterial = "ej299";
     fCheckOverlaps = false;
   fTeflonThickness = 0.11*mm;
   //fMylarThickness = 0.0125*mm;
@@ -123,7 +123,7 @@ G4VPhysicalVolume* nDetConstruction::ConstructDetector(){
 
     if(fWrappingMaterial=="teflon")
         fWrapping=fTeflon;
-    if(fWrappingMaterial == "Mylar")
+    if(fWrappingMaterial == "mylar")
         fWrapping=fMylar;
 
     if(fScintillatorMaterial == "ej200")
@@ -1034,6 +1034,7 @@ void nDetConstruction::DefineMaterials() {
     G4double RefractiveIndex_EJ299[nEntries_EJ299] = { 1.58, 1.58, 1.58, 1.58, 1.58 };
     G4double Absorption_EJ299[nEntries_EJ299] =  { 400*cm, 400*cm, 400*cm, 400*cm, 400*cm };
     G4double ScintilFast_EJ299[nEntries_EJ299] = { 0.05, 0.25, 0.55, 1.00, 0.0};
+    G4double ScintilSlow_EJ299[nEntries_EJ299] = { 0.05, 0.25, 0.55, 1.00, 0.0};
 
     G4double efficiencyEJ299[nEntries_EJ299]={0.,0.,0.,0.,0};
 
@@ -1041,6 +1042,7 @@ void nDetConstruction::DefineMaterials() {
     fEJ299MPT->AddProperty("RINDEX",       PhotonEnergyEJ299, RefractiveIndex_EJ299, nEntries_EJ299);
     fEJ299MPT->AddProperty("ABSLENGTH",    PhotonEnergyEJ299, Absorption_EJ299,      nEntries_EJ299);
     fEJ299MPT->AddProperty("FASTCOMPONENT",PhotonEnergyEJ299, ScintilFast_EJ299,     nEntries_EJ299);
+    fEJ299MPT->AddProperty("SLOWCOMPONENT",PhotonEnergyEJ299, ScintilSlow_EJ299,     nEntries_EJ299);
     fEJ299MPT->AddProperty("EFFICIENCY",PhotonEnergyEJ299,efficiencyEJ299,nEntries_EJ299);
 
     fEJ299MPT->AddConstProperty("SCINTILLATIONYIELD", 8600/MeV); //8,600 Photons per MeV
@@ -1051,8 +1053,9 @@ void nDetConstruction::DefineMaterials() {
     //fEJ200MPT->AddConstProperty("FASTSCINTILLATIONRISETIME", 0.5*ns); //TODO DPL changing rise time to 500 ps
 
     fEJ299MPT->AddConstProperty("FASTTIMECONSTANT", 13*ns);
-    fEJ299MPT->AddConstProperty("SLOWTIMECONSTANT", 460*ns); //TODO DPL Get Back to 2.1 ns
+    fEJ299MPT->AddConstProperty("SLOWTIMECONSTANT", 132*ns);
     fEJ299MPT->AddConstProperty("YIELDRATIO",0.513);// Comrie et al. PoS(TIPP2014) 251
+    //fEJ299MPT->AddConstProperty("YIELDRATIO",0.);// Comrie et al. PoS(TIPP2014) 251
 
 
     G4cout<<"EJ-299 Material Properties Table"<<G4endl;
@@ -1092,6 +1095,23 @@ void nDetConstruction::DefineMaterials() {
 
 
     fEJ299->SetMaterialPropertiesTable(fEJ299MPT);
+
+
+
+    //define p-terphenyl C18H14
+    density=1.23*g/cm3;
+
+    fPterphenyl=new G4Material("pterphenyl",density,ncomponents=2);
+    fPterphenyl->AddElement(fC,natoms=18);
+    fPterphenyl->AddElement(fH,natoms=14);
+
+    //TODO Add p-terphenyl properties
+
+
+    const G4int nEntriesPterphenyl =5;
+
+    fPterphenylMPT=new G4MaterialPropertiesTable();
+
 
 
 

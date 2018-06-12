@@ -24,7 +24,9 @@
 #include "G4Electron.hh"
 #include "G4Gamma.hh"
 #include "G4Neutron.hh"
+#include "G4Proton.hh"
 #include "G4Triton.hh"
+#include "G4Scintillation.hh"
 #include "G4EventManager.hh"
 #define DEBUG 0
 
@@ -93,13 +95,15 @@ void nDetSteppingAction::UserSteppingAction(const G4Step* aStep)
     theEventInfo = static_cast<nDetUserEventInformation*>(G4EventManager::GetEventManager()->GetUserInformation());
 
 
-  if( (name.find("EJ") != name.npos ) && aStep->GetTotalEnergyDeposit() > 0 ){
+
+
+    if( (name.find("EJ") != name.npos ) && aStep->GetTotalEnergyDeposit() > 0 ){
     G4double edep = aStep->GetTotalEnergyDeposit();
 
 //Xiaodong says we can put some code here.  GetParticleName 
 //step->track->particlename
 
-    G4String pname = aStep->GetTrack()->GetParticleDefinition()->GetParticleName();
+     G4String pname = aStep->GetTrack()->GetParticleDefinition()->GetParticleName();
     //G4cout<< pname <<" Deposited Energy "<<edep/keV<<" non-ionizing "<<aStep->GetNonIonizingEnergyDeposit()/keV<<  G4endl;
 
     /* 
