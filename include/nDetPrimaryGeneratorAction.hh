@@ -14,10 +14,13 @@
 #include "globals.hh"
 #include "G4SystemOfUnits.hh"
 #include "G4PhysicalConstants.hh"
+#include "nDetPrimaryMessenger.hh"
 
 class G4ParticleGun;
 class G4GeneralParticleSource;
+class G4VParticleGenerator;
 class G4Event;
+
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -30,6 +33,7 @@ class nDetPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
   public:
 
     void GeneratePrimaries(G4Event*);
+    void SetGeneratorType(G4String theType){fSourceType=theType;}
   //DPL Added Sampling in neutron Energies
     void SetNeutronDecayData(G4String theFileName);
     G4double GetNeutronEng();
@@ -42,7 +46,8 @@ class nDetPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 
   private:
     G4ParticleGun* particleGun;
-    //G4GeneralParticleSource *particleGun;
+    G4GeneralParticleSource *particleSource;
+    nDetPrimaryMessenger *fMessenger;
     nDetRunAction* runAct;
 
     //DPL
@@ -52,6 +57,9 @@ class nDetPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
     G4double *IntensityRaw;
     G4double *ProbRaw;
     G4double *ProbLimit;
+
+    G4String fSourceType;
+
 
 };
 

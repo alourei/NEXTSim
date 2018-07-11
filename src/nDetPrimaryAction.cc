@@ -28,8 +28,10 @@ nDetPrimaryGeneratorAction::nDetPrimaryGeneratorAction(nDetRunAction* run)
 : runAct(run)
 {
   G4int n_particle = 1;
+  fSourceType = "gun";
+  fMessenger=new nDetPrimaryMessenger(this);
   particleGun = new G4ParticleGun(n_particle);
-  //particleGun = new G4GeneralParticleSource();
+  particleSource = new G4GeneralParticleSource();
   //default kinematic
   //
   G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
@@ -40,13 +42,14 @@ nDetPrimaryGeneratorAction::nDetPrimaryGeneratorAction(nDetRunAction* run)
   //G4ParticleDefinition* particle = G4Electron::ElectronDefinition();
 
     G4ParticleDefinition *particle =G4Geantino::GeantinoDefinition();
+
+    particleGun->SetParticleDefinition(particle);
+    particleSource->SetParticleDefinition(particle);
     SetNeutronDecayData("85As.dat");
     //SetNeutronDecayData("133In.dat");
 
-  particleGun->SetParticleDefinition(particle);
 
-
-  //particleGun->SetParticleMomentumDirection(G4ThreeVector(0, -1., 0)); // along the y-axis direction
+  particleGun->SetParticleMomentumDirection(G4ThreeVector(0, -1., 0)); // along the y-axis direction
   particleGun->SetParticleEnergy(1*MeV);
   //changed to 1 MeV KS 5/20/16
   //particleGun->SetParticleEnergy(662.*keV);
@@ -58,6 +61,8 @@ nDetPrimaryGeneratorAction::nDetPrimaryGeneratorAction(nDetRunAction* run)
 nDetPrimaryGeneratorAction::~nDetPrimaryGeneratorAction()
 {
     delete particleGun;
+    delete particleSource;
+    delete fMessenger;
     delete [] DaughterExEng;
     delete [] IntensityRaw;
     delete [] ProbRaw;
@@ -96,16 +101,34 @@ void nDetPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
     G4double phi0 = -atan(1./4.)*radian;
     G4double phi = atan(1./4.)*radian;
 
+    G4ThreeVector VertexPosition;
 
-    GenerateIsotropicDirectionDistribution(&direction,Pi/2-theta,Pi/2+theta,phi0,phi);
+    if(fSourceType== "gun") {
+        particleGun->GeneratePrimaryVertex(anEvent);
 
-    //particleGun->SetParticleMomentumDirection(direction);
+        VertexPosition = particleGun->GetParticlePosition();
+    }
 
-    //particleGun->SetParticleEnergy(GetNeutronEng()*keV); //DPL TODO Change back to Decay
+    else if(fSourceType== "decay"){
 
-    particleGun->GeneratePrimaryVertex(anEvent);
+        GenerateIsotropicDirectionDistribution(&direction,Pi/2-theta,Pi/2+theta,phi0,phi);
 
-    G4ThreeVector VertexPosition= particleGun->GetParticlePosition();
+        particleGun->SetParticleMomentumDirection(direction);
+
+        particleGun->SetParticleEnergy(GetNeutronEng()*keV); //DPL TODO Change back to Decay
+
+        particleGun->GeneratePrimaryVertex(anEvent);
+
+        VertexPosition = particleGun->GetParticlePosition();
+
+    }
+
+
+    else {
+        particleSource->GeneratePrimaryVertex(anEvent);
+
+        VertexPosition = particleSource->GetParticlePosition();
+    }
 
     nDetAnalysisManager *theManager=(nDetAnalysisManager*)nDetAnalysisManager::Instance();
 

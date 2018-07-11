@@ -49,14 +49,18 @@ nDetConstruction::nDetConstruction()
 
   fDetectorMessenger=new nDetConstructionMessenger(this);
 
+    fGeometry="assembly";
     //fGeometry="ellipse";
     //fGeometry="hexagon";
-    fGeometry="array";
+    //fGeometry="array";
     //fGeometry="rectangle";
     //fGeometry="bent";
 
     fWrappingMaterial = "mylar";
+
     fScintillatorMaterial = "ej299";
+
+    mylar_VisAtt = new G4VisAttributes(G4Colour(1.0, 0.0, 1.0)); //magenta
     fCheckOverlaps = false;
   fTeflonThickness = 0.11*mm;
   //fMylarThickness = 0.0125*mm;
@@ -117,8 +121,6 @@ G4VPhysicalVolume* nDetConstruction::ConstructDetector(){
     // build experiment hall
   buildExpHall();
 
-  // build assembly volume
-  //buildAssembly();
 
 
     if(fWrappingMaterial=="teflon")
@@ -132,6 +134,9 @@ G4VPhysicalVolume* nDetConstruction::ConstructDetector(){
     if(fScintillatorMaterial == "ej299")
         fScintillator = fEJ299;
 
+    // build assembly volume
+    if(fGeometry == "assembly")
+        buildAssembly();
     //build Disk volume
     if(fGeometry == "disk")
         buildDisk();
@@ -160,7 +165,7 @@ void nDetConstruction::buildExpHall()
   G4Box* expHall_solidV = new G4Box("expHall_solidV",expHallX,expHallY,expHallZ);
 
   expHall_logV  = new G4LogicalVolume(expHall_solidV, fAir, "expHall_logV",0,0,0);
- // expHall_logV  = new G4LogicalVolume(expHall_solidV, Vacuum, "expHall_logV",0,0,0);
+  //expHall_logV  = new G4LogicalVolume(expHall_solidV, Vacuum, "expHall_logV",0,0,0);
     expHall_logV->SetVisAttributes(G4VisAttributes::Invisible);
 
   expHall_physV = new G4PVPlacement(0,G4ThreeVector(0., 0., 0.),expHall_logV,
@@ -181,6 +186,19 @@ void nDetConstruction::buildAssembly()
   //     The assembly volume is defined as a wrapping material
   //-----------------------------------------------------------
 
+    assemblyBoxX=25*mm, assemblyBoxY=64*mm, assemblyBoxZ=25*mm;
+
+    ej200X=3*mm, ej200Y=62.75*mm, ej200Z=6.35*mm;
+
+    greaseX = psSiPMx = 3*mm;
+    greaseY =psSiPMy = 0.05*mm;
+    greaseZ = psSiPMz= 3*mm;
+
+    qwSiPMx=3*mm;
+    qwSiPMy=0.5*mm;
+    qwSiPMz=3*mm;  // 1 mm thick SiPM window
+
+
    G4Box* assemblyBox = new G4Box("assembly", assemblyBoxX, assemblyBoxY, assemblyBoxZ);
   assembly_logV = new G4LogicalVolume(assemblyBox, fWrapping, "assembly");
   assembly_physV = new G4PVPlacement(0,
@@ -196,6 +214,7 @@ void nDetConstruction::buildAssembly()
 
     if(fWrappingMaterial == "mylar"){
 
+        assembly_logV->SetVisAttributes(mylar_VisAtt);
         fWrapSkinSurface = new G4LogicalSkinSurface("MylarSurface", assembly_logV, fMylarOpticalSurface);
 
     }
@@ -220,11 +239,11 @@ void nDetConstruction::buildAssembly()
   G4Transform3D transform3D_ej200;
 
 //  for(G4int x_index = 0; x_index<30; x_index++){
-  for(G4int x_index = 0; x_index<10; x_index++){ //reduced array size to 10x30 KS 5/23/16
-    for(G4int z_index = 0; z_index<30; z_index++){
+  for(G4int x_index = 0; x_index<8; x_index++){ //reduced array size to 10x30 KS 5/23/16
+    for(G4int z_index = 0; z_index<4; z_index++){
       //position_ej200.setX(assemblyBoxX - assemblyBoxX/15*(1+x_index*2)/2);
-      position_ej200.setX(assemblyBoxX - assemblyBoxX/5*(1+x_index*2)/2); //reduced KS 5/23/16
-      position_ej200.setZ(assemblyBoxZ - assemblyBoxZ/15*(1+z_index*2)/2);
+      position_ej200.setX(assemblyBoxX - assemblyBoxX/4*(1+x_index*2)/2); //reduced KS 5/23/16
+      position_ej200.setZ(assemblyBoxZ - assemblyBoxZ/2*(1+z_index*2)/2);
       position_ej200.setY(0.0);
 
       transform3D_ej200 = G4Transform3D(rotationMatrix_ej200, position_ej200);
@@ -264,11 +283,11 @@ void nDetConstruction::buildAssembly()
   G4Transform3D transform3D_grease;
 
   //for(G4int x_index = 0; x_index<30; x_index++){
-  for(G4int x_index = 0; x_index<10; x_index++){
-    for(G4int z_index = 0; z_index<30; z_index++){
+  for(G4int x_index = 0; x_index<8; x_index++){
+    for(G4int z_index = 0; z_index<8; z_index++){
       //position_grease.setX(assemblyBoxX - assemblyBoxX/15*(1+x_index*2)/2);
-      position_grease.setX(assemblyBoxX - assemblyBoxX/5*(1+x_index*2)/2);
-      position_grease.setZ(assemblyBoxZ - assemblyBoxZ/15*(1+z_index*2)/2);
+      position_grease.setX(assemblyBoxX - assemblyBoxX/4*(1+x_index*2)/2);
+      position_grease.setZ(assemblyBoxZ - assemblyBoxZ/4*(1+z_index*2)/2);
       position_grease.setY(ej200Y+greaseY);
 
       transform3D_grease = G4Transform3D(rotationMatrix_grease, position_grease);
@@ -303,11 +322,11 @@ void nDetConstruction::buildAssembly()
   G4Transform3D transform3D_SiPMwindow;
 
 //  for(G4int x_index = 0; x_index<30; x_index++){
-  for(G4int x_index = 0; x_index<10; x_index++){
-    for(G4int z_index = 0; z_index<30; z_index++){
+  for(G4int x_index = 0; x_index<8; x_index++){
+    for(G4int z_index = 0; z_index<8; z_index++){
       //position_SiPMwindow.setX(assemblyBoxX - assemblyBoxX/15*(1+x_index*2)/2);
-      position_SiPMwindow.setX(assemblyBoxX - assemblyBoxX/5*(1+x_index*2)/2);
-      position_SiPMwindow.setZ(assemblyBoxZ - assemblyBoxZ/15*(1+z_index*2)/2);
+      position_SiPMwindow.setX(assemblyBoxX - assemblyBoxX/4*(1+x_index*2)/2);
+      position_SiPMwindow.setZ(assemblyBoxZ - assemblyBoxZ/4*(1+z_index*2)/2);
       position_SiPMwindow.setY(ej200Y+2*greaseY+qwSiPMy);
 
       transform3D_SiPMwindow = G4Transform3D(rotationMatrix_SiPMwindow, position_SiPMwindow);
@@ -351,11 +370,11 @@ void nDetConstruction::buildAssembly()
   G4Transform3D transform3D_psSiPM;
 
 //  for(G4int x_index = 0; x_index<30; x_index++){
-  for(G4int x_index = 0; x_index<10; x_index++){
-    for(G4int z_index = 0; z_index<30; z_index++){
+  for(G4int x_index = 0; x_index<8; x_index++){
+    for(G4int z_index = 0; z_index<8; z_index++){
 //      position_psSiPM.setX(assemblyBoxX - assemblyBoxX/15*(1+x_index*2)/2);
-      position_psSiPM.setX(assemblyBoxX - assemblyBoxX/5*(1+x_index*2)/2);
-      position_psSiPM.setZ(assemblyBoxZ - assemblyBoxZ/15*(1+z_index*2)/2);
+      position_psSiPM.setX(assemblyBoxX - assemblyBoxX/4*(1+x_index*2)/2);
+      position_psSiPM.setZ(assemblyBoxZ - assemblyBoxZ/4*(1+z_index*2)/2);
       position_psSiPM.setY(ej200Y+2*greaseY+2*qwSiPMy+psSiPMy);
 
       transform3D_psSiPM = G4Transform3D(rotationMatrix_psSiPM, position_psSiPM);
@@ -443,7 +462,7 @@ void nDetConstruction::buildDisk()
     G4SubtractionSolid *theSolid=new G4SubtractionSolid("Wrapping",assemblyDisk,Hole);
 
 
-    assembly_logV = new G4LogicalVolume(theSolid, fWrapping, "Wrap");
+    assembly_logV = new G4LogicalVolume(theSolid, fWrapping, "Wrap "+fWrappingMaterial);
 
 
     G4RotationMatrix *rotationMatrix_Disk=new G4RotationMatrix;
@@ -468,6 +487,7 @@ void nDetConstruction::buildDisk()
 
     if(fWrappingMaterial == "mylar"){
 
+        assembly_logV->SetVisAttributes(mylar_VisAtt);
         G4LogicalSkinSurface* assemblySkin = new G4LogicalSkinSurface("MylarSurface", assembly_logV, fMylarOpticalSurface);
 
     }
@@ -779,9 +799,9 @@ void nDetConstruction::buildEllipse() {
 
 
 
-    assembly_logV=new G4LogicalVolume(theWrapping,fWrapping,"Wrapping_log");
+    assembly_logV=new G4LogicalVolume(theWrapping,fWrapping,"Wrapping_log "+fWrappingMaterial);
 
-    G4VPhysicalVolume *Wrapping_physVol=new G4PVPlacement(0,G4ThreeVector(0,0,0),assembly_logV,"Wrap",expHall_logV,0,0,true);
+    G4VPhysicalVolume *Wrapping_physVol=new G4PVPlacement(0,G4ThreeVector(0,0,0),assembly_logV,"Wrap "+fWrappingMaterial,expHall_logV,0,0,true);
 
 
     if(fWrappingMaterial == "teflon") {
@@ -791,6 +811,7 @@ void nDetConstruction::buildEllipse() {
 
     if(fWrappingMaterial == "mylar"){
 
+        assembly_logV->SetVisAttributes(mylar_VisAtt);
         G4LogicalSkinSurface *thePlasticSkin = new G4LogicalSkinSurface("MylarSurface", assembly_logV, fMylarOpticalSurface);
 
     }
@@ -991,7 +1012,7 @@ void nDetConstruction::DefineMaterials() {
                                120.7*pEF*psF,
                                146.5*pEF*psF, 183.8*pEF*psF, 246*pEF*psF, 290*pEF*psF,
                                365*pEF*psF, 483*pEF*psF, 678*pEF*psF, 910*pEF*psF,
-                               1175*pEF*psF, 562*pEF*psF, 2385*pEF*psF, 3660*pEF*psF,
+                               1175*pEF*psF, 1562*pEF*psF, 2385*pEF*psF, 3660*pEF*psF,
                                4725*pEF*psF,6250*pEF*psF, 8660*pEF*psF, 10420*pEF*psF,
                                13270*pEF*psF,17180*pEF*psF, 23100*pEF*psF,
                                29500*pEF*psF, 36200*pEF*psF, 45500*pEF*psF};
@@ -1537,13 +1558,14 @@ void nDetConstruction::buildEllipse2() {
 
     if(fWrappingMaterial == "mylar"){
 
+        assembly_logV->SetVisAttributes(mylar_VisAtt);
         fWrapSkinSurface = new G4LogicalSkinSurface("Wrapping", assembly_logV, fMylarOpticalSurface);
 
     }
 
     //fWrapSkinSurface=new G4LogicalSkinSurface("Wrapping",assembly_logV,0); // TODO DPL  Equivalent to black tape
 
-    G4VPhysicalVolume *Wrapping_physVol=new G4PVPlacement(0,G4ThreeVector(0,0,0),assembly_logV,"Wrap",expHall_logV,0,0,true);
+    G4VPhysicalVolume *Wrapping_physVol=new G4PVPlacement(0,G4ThreeVector(0,0,0),assembly_logV,"Wrap "+fWrappingMaterial,expHall_logV,0,0,true);
 
 
     //Building the Scintillator
@@ -1636,6 +1658,7 @@ void nDetConstruction::buildRectangle() {
 
     if(fWrappingMaterial == "mylar"){
 
+        assembly_logV->SetVisAttributes(mylar_VisAtt);
         fWrapSkinSurface = new G4LogicalSkinSurface("Wrapping", assembly_logV, fMylarOpticalSurface);
 
     }
@@ -1644,7 +1667,7 @@ void nDetConstruction::buildRectangle() {
     //fWrapSkinSurface = new G4LogicalSkinSurface("wrapping",assembly_logV,0); //Outside
 
 
-    G4VPhysicalVolume *Wrapping_physVol=new G4PVPlacement(0,G4ThreeVector(0,0,0),assembly_logV,"Wrapping",expHall_logV,0,0,fCheckOverlaps);
+    G4VPhysicalVolume *Wrapping_physVol=new G4PVPlacement(0,G4ThreeVector(0,0,0),assembly_logV,"Wrapping "+fWrappingMaterial,expHall_logV,0,0,fCheckOverlaps);
 
     //Building the Scintillator
 
@@ -1738,6 +1761,7 @@ void nDetConstruction::buildDisk2() {
 
     if(fWrappingMaterial == "mylar"){
 
+        assembly_logV->SetVisAttributes(mylar_VisAtt);
         fWrapSkinSurface = new G4LogicalSkinSurface("Wrapping", assembly_logV, fMylarOpticalSurface);
 
     }
@@ -1750,7 +1774,7 @@ void nDetConstruction::buildDisk2() {
     assembly_physV = new G4PVPlacement(rotationMatrix_Disk,
                                        G4ThreeVector(assemblyPx, assemblyPy, assemblyPz),
                                        assembly_logV,
-                                       "assembly_physV",
+                                       "assembly_physV "+fWrappingMaterial,
                                        expHall_logV,
                                        false, 0);
 
@@ -2040,9 +2064,9 @@ void nDetConstruction::PlaceNEXTModule(G4RotationMatrix *theRotation, G4ThreeVec
     G4double wrapping_width2 = array_length+2*fTeflonThickness;
     G4double wrapping_thickness = 2*psSiPMx +2*fTeflonThickness;
 
-    G4VSolid *theWrapping = ConstructNextModule("Wrapping",wrapping_length,wrapping_width,wrapping_width2,wrapping_thickness);
+    //G4VSolid *theWrapping = ConstructNextModule("Wrapping",wrapping_length,wrapping_width,wrapping_width2,wrapping_thickness);
 
-    //G4Box * theWrapping = new G4Box("Wrapping",wrapping_width2/2,wrapping_thickness/2,wrapping_length/2);
+    G4Box * theWrapping = new G4Box("Wrapping",wrapping_width2/2,wrapping_thickness/2,wrapping_length/2);
 
     assembly_logV = new G4LogicalVolume (theWrapping,fWrapping,"theWrapping_log");
 
@@ -2053,6 +2077,7 @@ void nDetConstruction::PlaceNEXTModule(G4RotationMatrix *theRotation, G4ThreeVec
 
     if(fWrappingMaterial == "mylar"){
 
+        assembly_logV->SetVisAttributes(mylar_VisAtt);
         fWrapSkinSurface = new G4LogicalSkinSurface("Wrapping", assembly_logV, fMylarOpticalSurface);
 
     }
@@ -2064,11 +2089,11 @@ void nDetConstruction::PlaceNEXTModule(G4RotationMatrix *theRotation, G4ThreeVec
     //rot->rotateZ(90*deg);
     //G4ThreeVector wrapping_position(0,0,wrapping_length/4);
 
-    assembly_physV= new G4PVPlacement(theRotation,thePosition,assembly_logV,"theWrapping_phys",expHall_logV,false,CopyNo,fCheckOverlaps);
+    assembly_physV= new G4PVPlacement(theRotation,thePosition,assembly_logV,"theWrapping_phys "+fWrappingMaterial,expHall_logV,false,CopyNo,fCheckOverlaps);
 
-    G4VSolid *TheScint = ConstructNextModule("Scint",fDetectorLength,fDetectorWidth,array_length,2*psSiPMx);
+    //G4VSolid *TheScint = ConstructNextModule("Scint",fDetectorLength,fDetectorWidth,array_length,2*psSiPMx);
 
-    //G4Box * TheScint = new G4Box("Wrapping",array_length/2,fDetectorThickness/2,fDetectorLength/2);
+    G4Box * TheScint = new G4Box("Wrapping",array_length/2,fDetectorThickness/2,fDetectorLength/2);
 
     if(CopyNo==0)
     ej200_logV=new G4LogicalVolume(TheScint,fScintillator,"ej200_logV");
@@ -2217,7 +2242,7 @@ void nDetConstruction::buildCylinder(){
     //theRot->rotateZ(EndAngle/2);
     G4ThreeVector thepos(-Distance,0,0);
 
-    assembly_physV = new G4PVPlacement(theRot,thepos,assembly_logV,"wrapping_phys",expHall_logV,0,0,false);
+    assembly_physV = new G4PVPlacement(theRot,thepos,assembly_logV,"wrapping_phys "+fWrappingMaterial,expHall_logV,0,0,false);
 
 
     if(fWrappingMaterial == "teflon") {
@@ -2227,6 +2252,7 @@ void nDetConstruction::buildCylinder(){
 
     if(fWrappingMaterial == "mylar"){
 
+        assembly_logV->SetVisAttributes(mylar_VisAtt);
         fWrapSkinSurface = new G4LogicalSkinSurface("Wrapping", assembly_logV, fMylarOpticalSurface);
 
     }

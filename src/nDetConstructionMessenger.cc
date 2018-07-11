@@ -19,7 +19,7 @@ nDetConstructionMessenger::nDetConstructionMessenger(nDetConstruction* detector)
     fGeometryCmd=new G4UIcmdWithAString("/nDet/detector/setGeometry",this);
     fGeometryCmd->SetGuidance("Defines the Geometry of the detector");
     fGeometryCmd->SetGuidance("Default is the disk");
-    fGeometryCmd->SetCandidates("disk hexagon ellipse rectangle array bent");
+    fGeometryCmd->SetCandidates("disk hexagon ellipse rectangle array bent assembly");
     fGeometryCmd->SetParameterName("geometry",true);
     fGeometryCmd->SetDefaultValue("disk");
     fGeometryCmd->AvailableForStates(G4State_PreInit,G4State_Idle);

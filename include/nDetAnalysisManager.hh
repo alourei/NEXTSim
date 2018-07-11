@@ -162,7 +162,7 @@ private:
     G4double     neutronIncidentEnergy;
     G4String     incidentparticle;
 
-    G4double     depEnergy=0; // energy deposition inside of the EJ200 scintillator
+    G4double     depEnergy=0; // energy deposition inside of the scintillator
     G4double     firstEnergy;
 
     std::vector<double>     fvPrimaryPhotonPositionX;

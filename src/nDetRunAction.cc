@@ -20,7 +20,7 @@
 nDetRunAction::nDetRunAction()
 {
 
-    G4cout << "nDetRunAction::nDetRunAction()->"<< G4endl;
+    G4cout << "nDetRunAction::nDetRunAction()"<< G4endl;
 
     G4cout << "nDetRunAction::nDetRunAction()->fAnalysisManager: "<<fAnalysisManager<< G4endl;
 
@@ -34,6 +34,7 @@ nDetRunAction::nDetRunAction()
 
 nDetRunAction::~nDetRunAction()
 {
+    G4cout << "nDetRunAction::~nDetRunAction()"<< G4endl;
     delete timer;
     fAnalysisManager = 0;
 }

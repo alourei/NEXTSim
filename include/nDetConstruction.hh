@@ -60,6 +60,7 @@
  *
  */
 
+class  G4VisAttributes;
 /** \class nDetConstruction
  *  \brief This class defines the geometry of the detector.
  *
@@ -273,6 +274,8 @@ private:
     G4LogicalSkinSurface* fSiPMSkinSurface;
     G4LogicalBorderSurface* fMylarSurface;
 
+
+    G4VisAttributes *mylar_VisAtt;
 
 
     // member functions
