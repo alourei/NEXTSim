@@ -15,6 +15,7 @@ class G4UIcommand;
 class G4UIcmdWithABool;
 class G4UIcmdWithAString;
 class G4UIcmdWithADouble;
+class G4UIcmdWithAnInteger;
 class G4UIdirectory;
 class G4UIcmdWithADoubleAndUnit;
 class nDetConstructionMessenger:public G4UImessenger
@@ -42,9 +43,10 @@ private:
     G4UIcmdWithADoubleAndUnit *fDetectorThicknessCmd;
     G4UIcmdWithADoubleAndUnit *fTrapezoidLengthCmd;
     G4UIcmdWithADoubleAndUnit *fMylarThicknessCmd;
+    G4UIcmdWithADoubleAndUnit *fTeflonThicknessCmd;
     G4UIcmdWithADoubleAndUnit *fDistanceCmd;
     G4UIcommand*         fUpdateCmd;
-
+    G4UIcmdWithAnInteger* fNdetectorsCmd;
 };
 
 

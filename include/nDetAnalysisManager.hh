@@ -112,15 +112,6 @@ class nDetAnalysisManager:public G4RootAnalysisManager {
      */
     void SetOutputFileName(const G4String OutputName){fFileName=OutputName;}
 
-    void SetGossipFileName(const G4String OutputName){fgossipFileName=OutputName;}
-
-    void OpenGossipFile();
-
-    void CloseGossipFile();
-
-    void InitGossip();
-
-    void ProcessGossip( const SiPMHitsCollection *DHC_SiPM);
 
     /** Fills the Optical Photon Hits.
      * @param[in] anEvent pointer to the current GEANT4 event
@@ -133,27 +124,35 @@ class nDetAnalysisManager:public G4RootAnalysisManager {
 
 private:
 
-    G4String fFileName;
+    G4String fFileName; ///< The name of the ROOT output file
 
-    TFile *fFile;
+    TFile *fFile; ///< Pointer to the ROOT file
 
-    TTree *fTree;
+    TTree *fTree; ///< Pointer to the ROOT tree
 
-    G4long fRunNb;
-    G4long fEventNb;
+    G4long fRunNb;  ///< Run Number
+    G4long fEventNb; ///< The Event Number
 
     time_t LastDoItTime;
 
-    G4int fScintCollectionID;
-    G4int fSiPMCollectionID;
+    G4int fScintCollectionID; ///< The Hit Collection Identifier of the Scintillator
+    G4int fSiPMCollectionID;  ///< The Hit Collection Identifier of the Silicon PMs
 
-    G4int  fNbOfPhotons=0;
-    G4int  fNbOfDetectedPhotons;
-    G4int  fNbOfDetectors;
+    G4int  fNbOfPhotons=0;  ///< Number of scintillation photons produced
+    G4int  fNbOfDetectedPhotons; ///< Number of scintillation photons detected
+    G4int  fNbOfDetectors; ///<< Number of detectors
 
     G4int fNbOfAbsorptions;
 
-    nDetAnalysisMessenger *fMessenger;
+    nDetAnalysisMessenger *fMessenger; ///< Pointer to the Analysis Messenger
+
+
+    TClonesArray            *fCANeutronPosition;
+    TClonesArray            *fCANeutron4Momentum;
+
+
+    TClonesArray            *fCAOptPhotonHits; ///< Pointer to the  TClonesArray of Optical Photon Hits
+    TClonesArray            *fCAScintHits; ///< Pointer to the  TClonesArray of Scintillator Hits
 
 
     G4double     neutronIncidentPositionX;
@@ -162,8 +161,8 @@ private:
     G4double     neutronIncidentEnergy;
     G4String     incidentparticle;
 
-    G4double     depEnergy=0; // energy deposition inside of the scintillator
-    G4double     firstEnergy;
+    G4double     depEnergy=0; ///< Energy deposition inside of the scintillator
+    G4double     firstEnergy; ///< Energy deposited in the first interaction
 
     std::vector<double>     fvPrimaryPhotonPositionX;
     std::vector<double>     fvPrimaryPhotonPositionY;
@@ -171,13 +170,6 @@ private:
     std::vector<double>     fvPrimaryPhotonTime;
     std::vector<int>        fvPrimaryPhotonTrackID;
 
-    TClonesArray            *fCANeutronPosition;
-    TClonesArray            *fCANeutron4Momentum;
-
-
-    TClonesArray            *fCAOptPhotonHits;
-
-    TClonesArray            *fCAScintHits;
 
 
     std::vector<int>        fvhitNumber;
@@ -203,16 +195,6 @@ private:
 
     std::vector<int>         fvTrackReflections;
 
-
-
-
-
-    //Gossip Stuff
-    G4String                   fgossipFileName;
-    ofstream                   *fgossipOut;
-
-    sipmMC                     *fsipm;
-    std::vector<PhotonList*>   fphotons;
 
 
 };

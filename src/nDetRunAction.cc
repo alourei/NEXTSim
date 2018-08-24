@@ -22,7 +22,7 @@ nDetRunAction::nDetRunAction()
 
     G4cout << "nDetRunAction::nDetRunAction()"<< G4endl;
 
-    G4cout << "nDetRunAction::nDetRunAction()->fAnalysisManager: "<<fAnalysisManager<< G4endl;
+    //G4cout << "nDetRunAction::nDetRunAction()->fAnalysisManager: "<<fAnalysisManager<< G4endl;
 
     timer = new G4Timer;
     fAnalysisManager= (nDetAnalysisManager*)nDetAnalysisManager::Instance();

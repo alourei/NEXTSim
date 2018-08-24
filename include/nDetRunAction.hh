@@ -5,6 +5,17 @@
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
+
+/**
+ * \file nDetRunAction.hh
+ * \brief Definition of the nDetRunAction class
+ * \authors X. Zhang, K. Schmidt, D. Perez-Loureiro
+ * \date 2018/07/13
+ * \version 1.1
+ *
+ *  Created on: Sept., 2015
+ */
+
 #ifndef nDetRunAction_h
 #define nDetRunAction_h 1
 
@@ -24,15 +35,37 @@
 class G4Timer;
 class G4Run;
 
+/** \class nDetRunAction
+ *  \brief This class implements the Pure virtual class G4UserRunAction
+ *
+ */
 class nDetRunAction : public G4UserRunAction
 {
   public:
+
+    /**
+     * Constructor
+     */
     nDetRunAction();
+    /**
+     * Destructor
+     */
     virtual ~nDetRunAction();
 
   public:
+    /**
+     * Actions to be done at the beginning of the run
+     * @param aRun pointer to the current run
+     */
     void BeginOfRunAction(const G4Run* aRun);
+
+    /**
+     * Actions to be done at the end of the run
+     * @param aRun pointer to the current run
+     */
     void EndOfRunAction(const G4Run* aRun);
+
+    //TODO DPL: Remove all this. The information is already stored in the Analysis manager output!
 
     bool fillBranch(); // deposited energy in YAP
 
@@ -61,10 +94,10 @@ class nDetRunAction : public G4UserRunAction
     void vSD2PhotonPositionYPushBack(double pPY) { vSD2PhotonPositionY.push_back(pPY); };
     void vSD2PhotonPositionZPushBack(double pPZ) { vSD2PhotonPositionZ.push_back(pPZ); };
 
-//Following lines added by Kyle
+    //Following lines added by Kyle
     void particleNamePushBack(std::string name) { particleName.push_back(name); };
     void particleChargePushBack(double charge) {particleCharge.push_back(charge); };
-//end
+    //end
     // clear all the vector for the next event
     void vectorClear(){
 			vTimeOfPhotonInSD1.clear();
@@ -136,7 +169,7 @@ class nDetRunAction : public G4UserRunAction
 // Class description:
 //
 // This is  the base class of a user's action class which defines the 
-// user's action at the begining and the end of each run. The user can
+// user's action at the beginning and the end of each run. The user can
 // override the following two methods but the user should not change 
 // any of the contents of G4Run object.
 

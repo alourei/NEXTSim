@@ -20,7 +20,6 @@ nDetAnalysisManager::nDetAnalysisManager(){
 
     G4cout << "nDetAnalysisManager::nDetAnalysisManager()->"<<this<< G4endl;
     fFileName="Out.root";
-    fgossipFileName ="GossipOut.bin";
     fMessenger = new nDetAnalysisMessenger(this);
     fScintCollectionID=-1;
     fSiPMCollectionID=-1;
@@ -231,10 +230,6 @@ void nDetAnalysisManager::ResetEvent() {
     std::vector<int>().swap(fvhitNumber);
     std::vector<int>().swap(fvTrackID);
     std::vector<int>().swap(fvLayerNumber);
-    for(G4int i=0;i<fphotons.size();i++){
-
-        fphotons.at(i)->clear();
-    }
 
 //
 //    fparticleName.clear();
@@ -538,36 +533,8 @@ void nDetAnalysisManager::PostUserTrackingAction(const G4Track *aTrack) {
 }
 
 
-void nDetAnalysisManager::OpenGossipFile() {
-
-    fgossipOut = new ofstream(fgossipFileName.data(),std::ios::out | std::ios::app | std::ios::binary);
 
 
-}
-
-void nDetAnalysisManager::CloseGossipFile() {
-
-    fgossipOut->close();
-}
-
-
-void nDetAnalysisManager::InitGossip() {
-
-    fsipm = new sipmMC();
-
-    fsipm->GetParaFile("input/MPPC_6x6.txt");
-
-    TFile f("input/SpectralSensitivity.root");
-    fsipm->SetSpectralSensitivity((TGraph*)f.Get("MPPC_noRef"));
-    f.Close();
-
-    for(Int_t i=0; i<fNbOfDetectors;i++) {
-
-        PhotonList *theList=new PhotonList();
-        fphotons.push_back(theList);
-    }
-
-}
 
 void nDetAnalysisManager::OnceAWhileDoIt(const G4bool DoItNow) {
     time_t Now = time(0); // get the current time (measured in seconds)

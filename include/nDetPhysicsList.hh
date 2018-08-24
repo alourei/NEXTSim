@@ -67,11 +67,17 @@ public:
     void EnableScintByPID(G4bool value = true){useScintillationByPID = value;}
 
     void AddOpticalPhysics();
+    void AddDecayPhysics();
+    /** Enables/Disables RadioactiveDecay
+     * \param [in] value: true/false for enable/disable
+     */
+    void EnableDecay(G4bool value = true){useOpticalPhotons = value;}
 
 
 private:
     nDetPhysicsMessenger *fPhysicsMessenger; ///< Pointer to the Physics Messenger
     G4bool useOpticalPhotons;                ///< Flag for Optical Photons
+    G4bool useRadioactiveDecay;              ///< Flag for Radioactive Decay
     G4bool useScintillationByPID;            ///< Flag for different scintillation by Particle type
     G4bool usePIDScintillation;              ///< Flag for different scintillation by Particle type for PID purposes
 

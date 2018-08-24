@@ -7,6 +7,7 @@
 #include "nDetConstruction.hh"
 #include "G4UIcommand.hh"
 #include "G4UIcmdWithAString.hh"
+#include "G4UIcmdWithAnInteger.hh"
 #include "G4UIdirectory.hh"
 #include "G4UIcmdWithADoubleAndUnit.hh"
 #include "G4UIcmdWithADouble.hh"
@@ -60,8 +61,13 @@ nDetConstructionMessenger::nDetConstructionMessenger(nDetConstruction* detector)
     fDetectorThicknessCmd->SetDefaultUnit("mm");
 
     fMylarThicknessCmd=new G4UIcmdWithADoubleAndUnit("/nDet/detector/setMylarThickness",this);
-    fMylarThicknessCmd->SetGuidance("Defines the thickness of mylar the mylar (default mm, 0 for no mylar)");
+    fMylarThicknessCmd->SetGuidance("Defines the thickness of mylar wrapping (default mm, 0 for no mylar)");
     fMylarThicknessCmd->SetDefaultUnit("mm");
+
+    fTeflonThicknessCmd=new G4UIcmdWithADoubleAndUnit("/nDet/detector/setTeflonThickness",this);
+    fTeflonThicknessCmd->SetGuidance("Defines the thickness of teflon wrapping (default mm, 0 for no teflon)");
+    fTeflonThicknessCmd->SetDefaultUnit("mm");
+
 
     fTrapezoidLengthCmd=new G4UIcmdWithADoubleAndUnit("/nDet/detector/setTrapezoidLength",this);
     fTrapezoidLengthCmd->SetGuidance("Defines the length of the trapezoidal part of ellipse (default cm)");
@@ -74,6 +80,8 @@ nDetConstructionMessenger::nDetConstructionMessenger(nDetConstruction* detector)
     fDistanceCmd=new G4UIcmdWithADoubleAndUnit("/nDet/detector/setDistance",this);
     fDistanceCmd->SetGuidance("Defines the distance between the detector and the origin for curved geometries (default cm)");
     fDistanceCmd->SetDefaultUnit("cm");
+
+    fNdetectorsCmd=new G4UIcmdWithAnInteger("/nDet/detector/setNumberOfDetectors",this);
 
 }
 
@@ -97,6 +105,8 @@ nDetConstructionMessenger::~nDetConstructionMessenger(){
 
     delete fMylarThicknessCmd;
 
+    delete fTeflonThicknessCmd;
+
     delete fUpdateCmd;
 
     delete fDistanceCmd;
@@ -104,6 +114,8 @@ nDetConstructionMessenger::~nDetConstructionMessenger(){
     delete fWrappingCmd;
 
     delete fScintCmd;
+
+    delete fNdetectorsCmd;
 
     //G4cout<<"nDetConstructionMessenger::~nDetConstructionMessenger()->"<<fGeometryCmd<<G4endl;
 }
@@ -156,6 +168,18 @@ void nDetConstructionMessenger::SetNewValue(G4UIcommand* command,G4String newVal
         G4double val=fMylarThicknessCmd->ConvertToDimensionedDouble(newValue);
         fDetector->SetMylarThickness(val);
     }
+
+    if(command == fTeflonThicknessCmd) {
+        G4double val=fTeflonThicknessCmd->ConvertToDimensionedDouble(newValue);
+        fDetector->SetTeflonThickness(val);
+    }
+
+    if(command == fNdetectorsCmd){
+        G4int val=fNdetectorsCmd->ConvertToInt(newValue);
+        fDetector->SetNDetectors(val);
+    }
+
+
 
     if(command == fUpdateCmd){
        fDetector->UpdateGeometry();

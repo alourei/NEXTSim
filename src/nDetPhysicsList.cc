@@ -12,6 +12,7 @@
 #include "G4StoppingPhysics.hh"
 #include "G4IonPhysics.hh"
 #include "G4OpticalPhysics.hh"
+#include "G4RadioactiveDecayPhysics.hh"
 #include "NEXTOpticalPhysicsList.hh"
 nDetPhysicsList::nDetPhysicsList() :QGSP_BERT_HP() {
 
@@ -19,7 +20,10 @@ nDetPhysicsList::nDetPhysicsList() :QGSP_BERT_HP() {
 
     useOpticalPhotons = true;
     useScintillationByPID = true;
-    usePIDScintillation = true;
+    usePIDScintillation = false;
+    useRadioactiveDecay =true;
+
+    AddDecayPhysics();
 
 
 }
@@ -51,6 +55,15 @@ void nDetPhysicsList::AddOpticalPhysics() {
 
 }
 
+void nDetPhysicsList::AddDecayPhysics() {
+
+    if(useRadioactiveDecay){
+        G4RadioactiveDecayPhysics *theDecay=new G4RadioactiveDecayPhysics();
+        RegisterPhysics(theDecay);
+    }
+
+
+}
 
 void nDetPhysicsList::SetCuts() {
     SetCutsWithDefault();

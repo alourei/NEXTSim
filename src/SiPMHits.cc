@@ -67,6 +67,7 @@ void SiPMHit::Draw()
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void SiPMHit::Print()
 {
+
     G4cout << "  time: " << G4BestUnit(time,"Time")
            << "  local time: " << G4BestUnit(local_time,"Time")
            << "  position: " << G4BestUnit(pos,"Length") << G4endl

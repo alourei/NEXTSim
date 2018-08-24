@@ -80,6 +80,8 @@ nDetConstruction::nDetConstruction()
   expHallY = assemblyBoxY + margin;
   expHallZ = assemblyBoxZ + margin;
 
+  fNdetectors=2;
+
     //Build the materials
     DefineMaterials();
 
@@ -226,6 +228,14 @@ void nDetConstruction::buildAssembly()
   G4Box* ej200_solidV = new G4Box("ej200_solidV", ej200X, ej200Y, ej200Z);
 
   ej200_logV = new G4LogicalVolume(ej200_solidV, fScintillator, "ej200_logV", 0, 0, 0);
+
+  G4OpticalSurface *theSurface=NULL;
+  if(fWrappingMaterial=="teflon")
+      theSurface=fTeflonOpticalSurface;
+  else
+      theSurface=fMylarOpticalSurface;
+
+  G4LogicalSkinSurface *reflector=new G4LogicalSkinSurface("SciMylarSurface",ej200_logV,theSurface);
 
   G4VisAttributes* ej200_VisAtt= new G4VisAttributes(G4Colour(0.0,0.0,1.0));//blue
   ej200_logV->SetVisAttributes(ej200_VisAtt);
@@ -423,7 +433,7 @@ void nDetConstruction::buildDisk()
 
     G4double hexagonSize=50*mm;
 
-    G4double teflonThickness=0.11*mm;
+    G4double teflonThickness=fTeflonThickness;
 
     G4double minDiskRadius=0*mm;
     G4double maxDiskRadius=hexagonSize+teflonThickness;
@@ -651,7 +661,7 @@ void nDetConstruction::buildDisk()
       
       }
   }
-  
+
 
   //  place the assembly
   //
@@ -737,7 +747,7 @@ void nDetConstruction::buildDisk()
 void nDetConstruction::buildEllipse() {
 
 
-    G4double teflonThickness=0.11*mm;
+    G4double teflonThickness=fTeflonThickness;
 
     G4double mylarThickness=0.0125*mm; //25 um mylar
 
@@ -891,6 +901,11 @@ void nDetConstruction::DefineMaterials() {
     //Materials & Properties
     G4NistManager* manNist = G4NistManager::Instance();
 
+    fB=manNist->FindOrBuildElement("B");
+    fNa=manNist->FindOrBuildElement("Na");
+    fK=manNist->FindOrBuildElement("K");
+    fCs=manNist->FindOrBuildElement("Cs");
+    fSb=manNist->FindOrBuildElement("Sb");
 
     fAir=manNist->FindOrBuildMaterial("G4_AIR");
 
@@ -1186,11 +1201,11 @@ void nDetConstruction::DefineMaterials() {
     const G4int nEntries_Sil = 5;
     G4double  RefractiveReal_Si[nEntries_Sil] = { 4.293, 4.453, 4.676, 5.008, 5.587 };
     G4double   RefractiveImg_Si[nEntries_Sil] = { 0.045, 0.060, 0.091, 0.150, 0.303 };
-    //G4double EfficiencyIndex_Si[nEntries_Sil] = { 0.37, 0.42, 0.39, 0.36, 0.32 };
+    G4double EfficiencyIndex_Si[nEntries_Sil] = { 0.37, 0.42, 0.39, 0.36, 0.32 };
     //IDEAL DETECTOR
-    G4double EfficiencyIndex_Si[nEntries_Sil] = { 1., 1., 1., 1., 1. };
-    //G4double Reflective_Si[nEntries_Sil] = { 0.49, 0.45, 0.42, 0.40, 0.39};
-    G4double Reflective_Si[nEntries_Sil] = { 0., 0., 0., 0., 0.};
+    //G4double EfficiencyIndex_Si[nEntries_Sil] = { 1., 1., 1., 1., 1. };
+    G4double Reflective_Si[nEntries_Sil] = { 0.49, 0.45, 0.42, 0.40, 0.39};
+    //G4double Reflective_Si[nEntries_Sil] = { 0., 0., 0., 0., 0.};
 
     fSilMPT = new G4MaterialPropertiesTable();
     //fSilMPT->AddProperty("REALRINDEX", PhotonEnergy, RefractiveReal_Si, nEntries_Sil);
@@ -1244,14 +1259,70 @@ void nDetConstruction::DefineMaterials() {
     const G4int nEntries_Mylar = 5;
     G4double RefractiveReal_Mylar[nEntries_Mylar]={0.81257,0.72122,0.63324,0.55571,0.48787};
     G4double RefractiveImg_Mylar[nEntries_Mylar]={6.0481,5.7556,5.4544,5.1464,4.8355};
+    G4double Reflectivity_Mylar[nEntries_Mylar]={0.99,0.9999,0.99,0.99,0.99};
 
     fMylarMPT=new G4MaterialPropertiesTable();
     fMylarMPT->AddProperty("REALRINDEX", PhotonEnergy,RefractiveReal_Mylar,nEntries_Mylar);
+    fMylarMPT->AddProperty("RINDEX", PhotonEnergy,RefractiveReal_Mylar,nEntries_Mylar);
+    fMylarMPT->AddProperty("REFLECTIVITY", PhotonEnergy,Reflectivity_Mylar,nEntries_Mylar);
     fMylarMPT->AddProperty("IMAGINARYRINDEX", PhotonEnergy,RefractiveImg_Mylar,nEntries_Mylar);
 
     fMylarOpticalSurface=new G4OpticalSurface("MylarSurface",glisur,polished,dielectric_metal,1.0);
 
     fMylarOpticalSurface->SetMaterialPropertiesTable(fMylarMPT);
+
+    G4double massFraction=0;
+
+    fBialkali = new G4Material("Bialkali", density= 4.28*g/cm3,
+                              ncomponents=3);
+    fBialkali->AddElement(fK, massFraction=0.133);
+    fBialkali->AddElement(fCs, massFraction=0.452);
+    fBialkali->AddElement(fSb, massFraction=0.415);
+
+
+    const G4int nEntries_BA = 5;
+    G4double  RefractiveReal_BA[nEntries_BA] = { 4.293, 4.453, 4.676, 5.008, 5.587 };
+    G4double   RefractiveImg_BA[nEntries_BA] = { 0.045, 0.060, 0.091, 0.150, 0.303 };
+    //G4double EfficiencyIndex_Si[nEntries_Sil] = { 0.37, 0.42, 0.39, 0.36, 0.32 };
+    //IDEAL DETECTOR
+    G4double EfficiencyIndex_BA[nEntries_BA] = { 1., 1., 1., 1., 1. };
+    //G4double Reflective_BA[nEntries_BA] = { 0.49, 0.45, 0.42, 0.40, 0.39};
+    G4double Reflective_BA[nEntries_BA] = { 0., 0., 0., 0., 0.};
+
+    fBialkaliMPT = new G4MaterialPropertiesTable();
+    //fSilMPT->AddProperty("REALRINDEX", PhotonEnergy, RefractiveReal_Si, nEntries_Sil);
+    //fSilMPT->AddProperty("IMAGINARYRINDEX", PhotonEnergy, RefractiveImg_Si, nEntries_Sil);
+    fBialkaliMPT->AddProperty("EFFICIENCY",   PhotonEnergy, EfficiencyIndex_BA, nEntries_BA);
+    fBialkaliMPT->AddProperty("REFLECTIVITY",   PhotonEnergy, Reflective_BA, nEntries_BA);
+
+    fBialkali->SetMaterialPropertiesTable(fBialkaliMPT);
+
+
+
+    fBorosilicate = new G4Material("Borosilicate", density= 2.23*g/cm3,
+                                  ncomponents=6);
+    fBorosilicate->AddElement(fB, massFraction=0.040064);
+    fBorosilicate->AddElement(fO, massFraction=0.539562);
+    fBorosilicate->AddElement(fNa, massFraction=0.028191);
+    fBorosilicate->AddElement(fAl, massFraction=0.011644);
+    fBorosilicate->AddElement(fSi, massFraction=0.377220);
+    fBorosilicate->AddElement(fK, massFraction=0.003321);
+
+
+
+    const G4int nEntries_Borosilicate = 5;
+
+    //optical properties of Borosilicate - fused silica or fused quartz
+    G4double RefractiveIndex_Borosilicate[nEntries_Borosilicate] = { 1.54, 1.54, 1.54, 1.54, 1.54 };
+    G4double Absorption_Borosilicate[nEntries_Borosilicate] =  {125.*cm, 123.5*cm, 122.*cm, 121.*cm, 120.*cm};
+
+
+    fBorosilicateMPT = new G4MaterialPropertiesTable();
+    fBorosilicateMPT->AddProperty("RINDEX", PhotonEnergy, RefractiveIndex_Borosilicate, nEntries_Borosilicate);
+    fBorosilicateMPT->AddProperty("ABSLENGTH", PhotonEnergy, Absorption_Borosilicate,nEntries_Borosilicate);
+    fBorosilicate->SetMaterialPropertiesTable(fBorosilicateMPT);
+
+
 
     return;
 }
@@ -1514,7 +1585,7 @@ void nDetConstruction::UpdateGeometry(){
 void nDetConstruction::buildEllipse2() {
 
 
-    G4double teflonThickness=0.22*mm;
+    G4double teflonThickness=2*fTeflonThickness;
 
 
     G4double plasticLength = fDetectorLength-2*fTrapezoidLength ;
@@ -1625,7 +1696,7 @@ void nDetConstruction::buildEllipse2() {
 
 void nDetConstruction::buildRectangle() {
 
-    G4double teflonThickness=0.22*mm;
+    G4double teflonThickness=2*fTeflonThickness;
 
     //fMylarThickness=0.025*mm; //25 um mylar
 
@@ -2044,15 +2115,22 @@ void nDetConstruction::PlaceNEXTModule(G4RotationMatrix *theRotation, G4ThreeVec
     psSiPMx = SiPM_dimension;
     psSiPMz = SiPM_dimension;
 
-    qwSiPMy = 0.37/2*mm;
+    fMylarThickness=0.025*mm;
+
+    //if(fWrappingMaterial == "mylar") {
+    //fTeflonThickness=fMylarThickness;
+    //}
+
+        qwSiPMy = 0.37/2*mm;
     psSiPMy = 0.09/2*mm;
 
-    fNdetectors=8;
+    //fNdetectors=2;
 
     fCheckOverlaps =false;
 
-    fDetectorLength = 24*cm;
-    fDetectorWidth = 12*cm;
+    //fDetectorLength = 24*cm;
+    //fDetectorWidth = 12*cm;
+
     G4double gap = 0.1*mm;
     G4double array_length = fNdetectors*2*SiPM_dimension+2*(fNdetectors-1)*gap;
 
@@ -2147,6 +2225,7 @@ void nDetConstruction::PlaceNEXTModule(G4RotationMatrix *theRotation, G4ThreeVec
     qwSiPMy = 0.37/2*mm;
     psSiPMy = 0.09/2*mm;
     greaseY = 0.05*mm;
+
 
 
     G4double gap = 0.1*mm;
@@ -2399,7 +2478,11 @@ return theCasing;
 
 void nDetConstruction::buildArray() {
 
-    G4int nDetectors=8;
+    G4int nDetectorsX=8;
+    G4int nDetectorsY=1;
+
+    G4double offsetY=-fDetectorWidth/2+nDetectorsY*(fDetectorWidth+fTeflonThickness)/2;
+    G4double offsetX=-fDetectorThickness/2+nDetectorsX*(fDetectorThickness+fTeflonThickness)/2;
 
     G4RotationMatrix* rotation= new G4RotationMatrix();
 
@@ -2407,14 +2490,16 @@ void nDetConstruction::buildArray() {
 
     G4ThreeVector position(0,0,0);
 
-    for(G4int j=0;j<nDetectors;j++){
+    for(G4int j=0;j<nDetectorsY;j++) {
 
-     position.setX(j*(fDetectorThickness+2*fTeflonThickness));
+        position.setY(j * (fDetectorWidth + 1 * fTeflonThickness)-offsetY);
 
-    PlaceNEXTModule(rotation,position,"NEXT_module",expHall_logV,j);
+        for (G4int k = 0; k < nDetectorsX; k++) {
+            position.setX((k * (fDetectorThickness + 1 * fTeflonThickness))-offsetX);
+            PlaceNEXTModule(rotation, position, "NEXT_module", expHall_logV, j*nDetectorsY+k);
 
+        }
     }
-
     return;
 
 }

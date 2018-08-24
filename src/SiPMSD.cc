@@ -84,7 +84,7 @@ G4bool SiPMSD::ProcessHits_constStep(const G4Step *aStep, G4TouchableHistory *RO
     //G4ThreeVector pos = aStep->GetPostStepPoint()->GetPosition();
 
     G4ThreeVector pos = theTouchable->GetHistory()->GetTopTransform().TransformPoint(worldPosition);
-    G4double  wavelength = CLHEP::h_Planck*CLHEP::c_light/aStep->GetTrack()->GetTotalEnergy()*1e6;
+    G4double  wavelength = CLHEP::h_Planck*CLHEP::c_light/aStep->GetTrack()->GetTotalEnergy();
 
 
     SiPMHit* hit = new SiPMHit(); //so create new hit

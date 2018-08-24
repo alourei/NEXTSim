@@ -111,7 +111,13 @@ class nDetConstruction : public G4VUserDetectorConstruction
      *
      * @param [in] thickness: the thickness of the mylar
      */
+    void SetTeflonThickness(G4double thickness){fTeflonThickness=thickness;}
+    /** Sets the thickness of the teflon layer (0 means no mylar layer)
+     *
+     * @param [in] thickness: the thickness of the teflon
+     */
     void SetMylarThickness(G4double thickness){fMylarThickness=thickness;}
+
     /** Sets the width of the detector
      *
      * @param [in] width: the detector width
@@ -154,14 +160,18 @@ class nDetConstruction : public G4VUserDetectorConstruction
 
     /** Sets the wrapping Material for the scintillator
       *
-      * @param [in]  aMaterial: tha name of the scintillator material
+      * @param [in]  aMaterial: the name of the scintillator material
       */
     void SetScintillatorMaterial(G4String aMaterial){fScintillatorMaterial = aMaterial;}
-    /**
+    /** Returns the Wrapping Material
      *
      * @return the string with the scintillator material name
      */
     G4String GetScintillatorMaterial(){ return fScintillatorMaterial;}
+    /** Sets the number of detectors per scintillator in the array
+     *  @param [in] nDetectors: the number of detectors
+     */
+    void SetNDetectors(G4int nDetectors){ fNdetectors=nDetectors;}
 
 private:
 
@@ -214,6 +224,9 @@ private:
     G4String fWrappingMaterial;
     G4String fScintillatorMaterial;
 
+
+    G4double fWrappingThickness;
+
     // logical and physical volume
     G4LogicalVolume* expHall_logV;
     G4LogicalVolume* assembly_logV;
@@ -239,6 +252,13 @@ private:
     G4Element* fSi;
     G4Element* fAl;
 
+    G4Element* fB;
+    G4Element* fNa;
+    G4Element* fK;
+    G4Element* fCs;
+    G4Element* fSb;
+
+
     G4Material* fAir;
     G4Material* fTeflon;
     G4Material* fEJ200;
@@ -248,6 +268,9 @@ private:
     G4Material* fSil;
     G4Material* fMylar;
     G4Material* fPterphenyl;
+
+    G4Material* fBorosilicate;
+    G4Material* fBialkali;
 
     G4Material* fWrapping;
     G4Material *fScintillator;
@@ -262,6 +285,9 @@ private:
     G4MaterialPropertiesTable* fSilMPT;
     G4MaterialPropertiesTable* fMylarMPT;
     G4MaterialPropertiesTable* fPterphenylMPT;
+
+    G4MaterialPropertiesTable* fBorosilicateMPT;
+    G4MaterialPropertiesTable* fBialkaliMPT;
 
     //Optical Surfaces
     G4OpticalSurface* fTeflonOpticalSurface;

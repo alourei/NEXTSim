@@ -13,6 +13,7 @@
 #include "G4ios.hh"
 #include "nDetAnalysisManager.hh"
 
+#include "G4EventManager.hh"
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 nDetStackingAction::nDetStackingAction(
@@ -67,9 +68,11 @@ nDetStackingAction::ClassifyNewTrack(const G4Track * aTrack) {
 
 void nDetStackingAction::NewStage()
 {
-  //G4cout << "nDetStackingAction::NewStage()->No. optical photons produced in this event : "
-    //     << photonNb << G4endl;
 
+  if(G4EventManager::GetEventManager()->GetVerboseLevel()) {
+    G4cout << "nDetStackingAction::NewStage()->No. optical photons produced in this event : "
+         << photonNb << G4endl;
+  }
 
 
 }
